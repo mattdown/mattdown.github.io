@@ -36,10 +36,6 @@ name = "Posts"
 url = "/posts"
 weight = 3
 
-[[menu.main]]
-name = "About"
-url = "/about"
-weight = 4
 
 [params]
   colortheme = "white"

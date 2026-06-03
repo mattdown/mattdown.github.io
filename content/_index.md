@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "Matt Down"
 ---
 
 Hi, I'm Matt — a game developer and programmer.
