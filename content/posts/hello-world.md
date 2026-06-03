@@ -1,6 +1,7 @@
 ---
 title: "Hello World"
 date: 2026-06-02
+mathjax: true
 tags: ["meta"]
 draft: true
 ---
