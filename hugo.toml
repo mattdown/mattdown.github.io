@@ -1,0 +1,63 @@
+baseURL = "https://mattdown.github.io/"
+locale = "en-us"
+title = "Matt Down"
+theme = "cactus"
+copyright = "Matt Down"
+
+[markup]
+  [markup.tableOfContents]
+    endLevel = 4
+    ordered = false
+    startLevel = 2
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = false
+    lineNos = true
+    lineNumbersInTable = false
+    noClasses = true
+    style = "dracula"
+    tabWidth = 4
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "Games"
+url = "/games"
+weight = 2
+
+[[menu.main]]
+name = "Posts"
+url = "/posts"
+weight = 3
+
+[[menu.main]]
+name = "About"
+url = "/about"
+weight = 4
+
+[params]
+  colortheme = "white"
+  rss = true
+  logo = "images/mattdown.jpeg"
+  description = "Game developer & programmer."
+  mainSection = "posts"
+  mainSectionTitle = "Posts"
+  showAllPostsOnHomePage = false
+  postsOnHomePage = 5
+  tagsOverview = true
+  showProjectsList = false
+  dateFormat = "2006-01-02"
+  show_updated = true
+  showReadTime = true
+  mathjax = false
+  css = ["css/custom.css"]
+
+  [[params.social]]
+    name = "github"
+    link = "https://github.com/mattdown"
