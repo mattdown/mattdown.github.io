@@ -1,0 +1,68 @@
+{{ $buildPath := .Get "buildPath" }}
+{{ $buildName := .Get "buildName" }}
+{{ $title     := .Get "title"     | default "Game" }}
+{{ $width     := .Get "width"     | default "960" }}
+{{ $height    := .Get "height"    | default "600" }}
+{{ $id        := printf "unity-%s" ($buildName | urlize) }}
+
+<div class="unity-embed-wrapper" style="max-width: {{ $width }}px; margin: 2rem auto;">
+  <div id="{{ $id }}" class="unity-container" style="position: relative; width: 100%;">
+    <canvas id="{{ $id }}-canvas"
+            style="width: 100%; height: auto; aspect-ratio: {{ $width }} / {{ $height }}; display: block; background: #231f20;"
+            tabindex="-1"></canvas>
+
+    <div id="{{ $id }}-loading" class="unity-loading-bar"
+         style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #231f20; color: #ccc; font-family: sans-serif; font-size: 0.85rem; gap: 1rem;">
+      <div>Loading <strong>{{ $title }}</strong>…</div>
+      <div style="width: 60%; height: 4px; background: #444; border-radius: 2px; overflow: hidden;">
+        <div id="{{ $id }}-progress" style="height: 100%; width: 0%; background: #ccc; transition: width 0.2s;"></div>
+      </div>
+    </div>
+
+    <div class="unity-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; font-size: 0.8rem; color: #888;">
+      <span>{{ $title }}</span>
+      <button id="{{ $id }}-fullscreen"
+              style="background: none; border: 1px solid #ccc; color: #ccc; padding: 2px 8px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;"
+              title="Fullscreen">⛶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var id          = {{ $id | jsonify }};
+  var buildPath   = {{ $buildPath | jsonify }};
+  var buildName   = {{ $buildName | jsonify }};
+  var title       = {{ $title | jsonify }};
+
+  var canvas       = document.getElementById(id + "-canvas");
+  var loadingBar   = document.getElementById(id + "-loading");
+  var progressBar  = document.getElementById(id + "-progress");
+  var fsButton     = document.getElementById(id + "-fullscreen");
+
+  var config = {
+    dataUrl:             buildPath + "/" + buildName + ".data",
+    frameworkUrl:        buildPath + "/" + buildName + ".framework.js",
+    codeUrl:             buildPath + "/" + buildName + ".wasm",
+    streamingAssetsUrl:  buildPath + "/StreamingAssets",
+    companyName:         "DefaultCompany",
+    productName:         title,
+    productVersion:      "1.0",
+  };
+
+  var script   = document.createElement("script");
+  script.src   = buildPath + "/" + buildName + ".loader.js";
+  script.onload = function () {
+    createUnityInstance(canvas, config, function (progress) {
+      progressBar.style.width = (100 * progress) + "%";
+    }).then(function (instance) {
+      loadingBar.style.display = "none";
+      fsButton.onclick = function () { instance.SetFullscreen(1); };
+    }).catch(function (msg) {
+      console.error(msg);
+      loadingBar.innerHTML = "<p style='color:#f88'>Failed to load game.</p>";
+    });
+  };
+  document.body.appendChild(script);
+})();
+</script>
