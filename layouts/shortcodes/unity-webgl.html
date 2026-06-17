@@ -61,12 +61,21 @@
 
   var script    = document.createElement("script");
   script.src    = buildPath + "/" + buildName + ".loader.js";
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    var gameUrl = buildPath.substring(0, buildPath.lastIndexOf('/')) + '/';
+    fsButton.textContent = '⤢ Open';
+    fsButton.onclick = function () { window.open(gameUrl, '_blank'); };
+  }
+
   script.onload = function () {
     createUnityInstance(canvas, config, function (progress) {
       progressBar.style.width = (100 * progress) + "%";
     }).then(function (instance) {
       loadingBar.style.display = "none";
-      fsButton.onclick = function () { instance.SetFullscreen(1); };
+      if (!isMobile) {
+        fsButton.onclick = function () { instance.SetFullscreen(1); };
+      }
     }).catch(function (msg) {
       console.error(msg);
       loadingBar.innerHTML = "<p style='color:#f88'>Failed to load game.</p>";
