@@ -29,7 +29,7 @@ When we get to a leaf node we then do a rollout. This consists of playing severa
 giving an indication of the likely result. Once this is complete the result (which will be something like a 0.8 win rate for red) is propagated
 back up the tree. Each node tracks it's visit count and sums the win rates from the rollout.
 
-Now let's take a deeper look at the UCT (Upper Confidence Bound) score, given by the following formula:
+Now let's take a deeper look at the UCT (Upper Confidence bound 1 applied to Trees) score, given by the following formula:
 
 $$UCT = \frac{WinCount}{VisitCount} + C\sqrt{\frac{\log{(VisitCount_{parent})}}{VisitCount}}$$
 
