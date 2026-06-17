@@ -55,5 +55,11 @@ weight = 3
   css = ["css/custom.css"]
 
   [[params.social]]
+  name = "linkedin"
+  link = "https://www.linkedin.com/in/matt-down-1475404b/"
+
+  [[params.social]]
     name = "github"
     link = "https://github.com/mattdown"
+
+

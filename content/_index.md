@@ -2,6 +2,6 @@
 title: "Matt Down"
 ---
 
-Hi, I'm Matt — a game developer and programmer.
+Hi, I'm Matt. Theoretical Physicist/Computational Neuroscientist turned game developer and part-time Machine Learning researcher.
 
-I make games with Unity, tinker with WebGL, and occasionally write about things I find interesting.
+Here you'll find the games I've worked on and the ML projects I have under way.
