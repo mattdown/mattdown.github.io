@@ -1,14 +1,16 @@
-{{ $buildPath := .Get "buildPath" }}
-{{ $buildName := .Get "buildName" }}
-{{ $title     := .Get "title"     | default "Game" }}
-{{ $width     := .Get "width"     | default "960" }}
-{{ $height    := .Get "height"    | default "600" }}
-{{ $id        := printf "unity-%s" ($buildName | urlize) }}
+{{ $buildPath  := .Get "buildPath" }}
+{{ $buildName  := .Get "buildName" }}
+{{ $title      := .Get "title"      | default "Game" }}
+{{ $width      := .Get "width"      | default "960" }}
+{{ $height     := .Get "height"     | default "600" }}
+{{ $fileSuffix := .Get "fileSuffix" | default "" }}
+{{ $id         := printf "unity-%s" ($buildName | urlize) }}
 
 <div class="unity-embed-wrapper" style="max-width: {{ $width }}px; margin: 2rem auto;">
   <div id="{{ $id }}" class="unity-container" style="position: relative; width: 100%;">
     <canvas id="{{ $id }}-canvas"
-            style="width: 100%; height: auto; aspect-ratio: {{ $width }} / {{ $height }}; display: block; background: #231f20;"
+            width="{{ $width }}" height="{{ $height }}"
+            style="width: 100%; height: auto; display: block; background: #231f20;"
             tabindex="-1"></canvas>
 
     <div id="{{ $id }}-loading" class="unity-loading-bar"
@@ -30,28 +32,35 @@
 
 <script>
 (function () {
-  var id          = {{ $id | jsonify }};
-  var buildPath   = {{ $buildPath | jsonify }};
-  var buildName   = {{ $buildName | jsonify }};
-  var title       = {{ $title | jsonify }};
+  var id          = "{{ $id }}";
+  var buildPath   = "{{ $buildPath }}";
+  var buildName   = "{{ $buildName }}";
+  var fileSuffix  = "{{ $fileSuffix }}";
+  var title       = "{{ $title }}";
 
-  var canvas       = document.getElementById(id + "-canvas");
-  var loadingBar   = document.getElementById(id + "-loading");
-  var progressBar  = document.getElementById(id + "-progress");
-  var fsButton     = document.getElementById(id + "-fullscreen");
+  var canvas      = document.getElementById(id + "-canvas");
+  var loadingBar  = document.getElementById(id + "-loading");
+  var progressBar = document.getElementById(id + "-progress");
+  var fsButton    = document.getElementById(id + "-fullscreen");
+
+  function showBanner(msg, type) {
+    console.warn("[Unity " + type + "]", msg);
+  }
 
   var config = {
-    dataUrl:             buildPath + "/" + buildName + ".data",
-    frameworkUrl:        buildPath + "/" + buildName + ".framework.js",
-    codeUrl:             buildPath + "/" + buildName + ".wasm",
+    arguments:           [],
+    dataUrl:             buildPath + "/" + buildName + ".data"         + fileSuffix,
+    frameworkUrl:        buildPath + "/" + buildName + ".framework.js" + fileSuffix,
+    codeUrl:             buildPath + "/" + buildName + ".wasm"         + fileSuffix,
     streamingAssetsUrl:  buildPath + "/StreamingAssets",
     companyName:         "DefaultCompany",
     productName:         title,
     productVersion:      "1.0",
+    showBanner:          showBanner,
   };
 
-  var script   = document.createElement("script");
-  script.src   = buildPath + "/" + buildName + ".loader.js";
+  var script    = document.createElement("script");
+  script.src    = buildPath + "/" + buildName + ".loader.js";
   script.onload = function () {
     createUnityInstance(canvas, config, function (progress) {
       progressBar.style.width = (100 * progress) + "%";
