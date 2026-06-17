@@ -19,15 +19,14 @@ which player. The circle with the highlight indicates the best move. Be sure to 
 
 ## Demo
 
-```
-{{</* unity-webgl
+{{< unity-webgl
   buildPath="/games/mcts_c4/Build"
-  buildName="MCTS"
+  buildName="mcts_c4"
+  fileSuffix=".unityweb"
   title="Connect 4 MCTS demo"
   width="960"
   height="600"
-*/>}}
-```
+>}}
 
 ## Algorithm breakdown
 
