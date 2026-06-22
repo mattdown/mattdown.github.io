@@ -2,7 +2,7 @@
 title: "Interactive Monte Carlo Tree Search Demo"
 date: 2026-06-17
 mathjax: true
-tags: ["MCTS", "Machine Learning", "ML", "AI", "Connect 4"]
+tags: ["MCTS", "Monte Carlo Tree Search", "Machine Learning", "ML", "AI", "Connect 4"]
 draft: false
 ---
 
@@ -29,11 +29,29 @@ which player. The circle with the highlight indicates the best move. Be sure to 
 
 ## Algorithm breakdown
 
-Now that you've has a play let's talk about how MCTS works. It's probably easiest to start explaining this algorithm once it's a few iterations in.
-We start at the root node (the current board state) and traverse the tree selecting the maximum UCT score at each node (we'll explain UCT in a bit).
-When we get to an unvisited node we add that to the tree and do a rollout/simulation from this new node. This consists of playing several simulated games from this node by playing random moves, 
-giving an indication of the likely result. Once this is complete the result (which will be something like a 0.8 win rate for red) and the visit count is propagated
-back up the tree. Each node tracks it's visit count and sums the win rates from the rollout.
+Now that you've has a play let's talk about how MCTS works. The algorithm starts with just a single node in it's tree but it's 
+probably easiest to start explaining this algorithm once it's a few iterations in, so note that the first few iterations will look slightly different to this.
+
+### 1. Selection
+
+We start at the root node (the current board state) we traverse the tree selecting the maximum UCT score at each node. We'll explain UCT in a bit, but for now
+just treat it as a score for the most promising child note.
+
+### 2. Expansion
+
+When we get to a node with any unexplored children, these unexplored children have an infinite UCT score by definition (as we'll see below), 
+so one selected at random (if more than one) and added to the tree. In some respects this isn't really a distinct step as 
+we're just following the rule above -  the only difference is that we're just considering nodes that exist implicitly rather than actually tracked in memory.
+
+### 3. Rollout/Simulation
+
+We now do a rollout/simulation from this new node. This consists of playing several simulated games from this node by playing random moves,
+giving an indication of the likely result if this sequence of moves were played in-game.
+
+### 4. Backpropagation
+
+Once this simulation is complete, the result (which will be something like a 0.8 win rate for red) is propagated
+back up the tree, along with incrementing each node's visit count by 1. 
 
 ### UCT score
 
@@ -53,17 +71,18 @@ step the parent visit count is equal to the sum of the child visit counts and sa
 
 The purpose of this second term is to balance **exploitation** vs **exploration**. If we only used the value term here we might get a 
 situation where one child node has a win rate of, say, 0.6 with only one visit and a sibling node has a win rate of 0.61 after many visits.
-It stands to reason that the node with only one visit that has only a marginally lower value score warrants further exploration. The constant $C$
-tunes this balance between exploration and exploitation, and is typically set to around $1.4$
+It stands to reason that the node with only one visit that has only a marginally lower value score warrants further exploration. The constant $C$ 
+determines the level of exploration, and is typically set to around $1.4$
 
-Note that you'll often see the UCT score expressed in the more concise form:
+Note that you'll often see the UCT score expressed in the more concise form where $V_i$ and $n_i$ are the win rate and the visit count at node $i$ respectively, $N$ is the parent
+visit count and $C$ is the same constant as before$:
 
 $$UCT = V_i + C\sqrt{\frac{\ln{N}}{n_i}}$$
 
 ### Action selection
 
-Once the tree has been expanded up to a given threshold it's time for the agent to select the best action. Here the UCT score is *not* used. Instead the child with the 
-highest visit count is selected. This is because the exploration term in UCT is no longer needed, no time to explore - time to take action now. Simply taking the action
+Once the tree has been expanded up to a given threshold (number of nodes added) it's time for the agent to select the best action. Here the UCT score is *not* used. Instead, the child with the 
+highest visit count is selected. This is because the exploration term in UCT is no longer needed, no time to explore - time to take action now. But simply taking the action
 with the highest win rate isn't desirable either as this might select a node with a high value score but low visit count. Total visit count is a better proxy for the child node
 with the highest true value.
 
