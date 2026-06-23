@@ -1,0 +1,19 @@
+{{ define "main" }}
+<div class="post-cards-section">
+  {{ range (sort .Pages "Date" "desc") }}
+  <a class="post-card" href="{{ .Permalink }}">
+    <div class="post-card-thumb">
+      {{ if .Params.thumbnail }}
+      <img src="{{ .Params.thumbnail }}" alt="{{ .Title }}" loading="lazy">
+      {{ else }}
+      <div class="post-card-thumb-placeholder"></div>
+      {{ end }}
+    </div>
+    <div class="post-card-body">
+      <h2 class="post-card-title">{{ if .Title }}{{ .Title }}{{ else }}Untitled{{ end }}</h2>
+      {{ if .Description }}<p class="post-card-desc">{{ .Description }}</p>{{ end }}
+    </div>
+  </a>
+  {{ end }}
+</div>
+{{ end }}

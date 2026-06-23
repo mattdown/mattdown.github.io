@@ -4,6 +4,7 @@ date: 2026-06-17
 mathjax: true
 tags: ["MCTS", "Monte Carlo Tree Search", "Machine Learning", "ML", "AI", "Connect 4"]
 draft: false
+thumbnail: ""
 ---
 
 Monte Carlo Tree search (MCTS) is the famous tree-search planning algorithm used in Google DeepMind's AlphaGo as well as many other
