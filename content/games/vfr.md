@@ -5,6 +5,7 @@ description: "Indie game inspired by F Zero"
 cover: "/images/games/vfr.png"
 tags: ["Indie Game", "Unity"]
 status: "released"
+youtubeId: "kP5UWYad_wA"
 # itchUrl: "https://itch.io/your-game"
 # sourceUrl: "https://github.com/mattdown/example-game"
 draft: false

@@ -237,6 +237,28 @@ body.colorscheme-dark .post-card-desc {
   display: block;
 }
 
+/* ── YouTube video embed (game single page) ──────────────── */
+
+.video-embed {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 800px;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  background: #000;
+}
+
+.video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* ── Unity embed ─────────────────────────────────────────── */
 
 .unity-embed-wrapper {
