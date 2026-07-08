@@ -15,4 +15,4 @@ the first Fantastic Beasts movie. The game follows a similar format to games suc
 solve hidden object scenes as well as a variety of mini-games to identify the beasts causing havoc in the wizarding world. 
 I was Senior Developer on this project, having architectured the project from scratch as well as developing several of 
 the minigames and visual effects in the game. The game has now had several million downloads, and you’ll even find me 
-playing a character in-game (Philbert Chivers if you want to google it).
+playing a character in-game https://harrypotter.fandom.com/wiki/Philbert_Chivers
