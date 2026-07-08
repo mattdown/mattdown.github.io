@@ -5,7 +5,7 @@ description: "Dicey Heist - Stealth game meets video poker meets Heist"
 cover: "/images/games/dicey-heist.png"
 tags: ["Pocket Burger Games", "Unity"]
 status: "sunset"
-draft: false
+draft: true
 ---
 
 Dicey Heist

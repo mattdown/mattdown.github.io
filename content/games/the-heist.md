@@ -5,7 +5,7 @@ description: "The Heist - Story Driven Board game - think Ocean's 11 meets Board
 cover: "/images/games/the-heist.png"
 tags: ["Pocket Burger Games", "Unity"]
 status: "sunset"
-draft: false
+draft: true
 ---
 
 https://apkpure.com/the-heist/games.pocketburger.onion

@@ -5,7 +5,7 @@ description: "The Badge - Crime detective game"
 cover: "/images/games/the-badge.png"
 tags: ["Space Ape Games", "Unity"]
 status: "sunset"
-draft: false
+draft: true
 ---
 
 The Badge was a soft-launched crime detective game. Responsibilities were lead Unity developer as well as being involved 
