@@ -5,6 +5,7 @@ description: "Merge Dragons - the hit game that put Gram Games on the map"
 cover: "/images/games/merge_dragons.png"
 tags: ["Gram Games", "Unity"]
 status: "released"
+youtubeId: "wL1-ypWBDBI"
 # itchUrl: "https://itch.io/your-game"
 # sourceUrl: "https://github.com/mattdown/example-game"
 draft: false

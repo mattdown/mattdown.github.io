@@ -5,6 +5,7 @@ description: "Fantastic Beasts, cases from the wizarding world - a hidden object
 cover: "/images/games/fantasticBeasts.jpg"
 tags: ["Mediatonic Games", "Unity"]
 status: "sunset"
+youtubeId: "5w1eNaDeZR0"
 # itchUrl: "https://itch.io/your-game"
 # sourceUrl: "https://github.com/mattdown/example-game"
 draft: false

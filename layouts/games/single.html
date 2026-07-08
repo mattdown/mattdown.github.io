@@ -25,7 +25,13 @@
       {{ end }}
     </div>
   </header>
-  {{ if .Params.cover }}
+  {{ if .Params.youtubeId }}
+  <div class="video-embed">
+    <iframe src="https://www.youtube.com/embed/{{ .Params.youtubeId }}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+  </div>
+  {{ else if .Params.cover }}
   <img class="game-page-cover" src="{{ .Params.cover }}" alt="{{ .Title }}">
   {{ end }}
   <div class="content">
