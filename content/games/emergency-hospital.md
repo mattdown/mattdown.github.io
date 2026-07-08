@@ -5,7 +5,7 @@ description: "Emergency Hospital - Story driven Merge-2 set in a hospital"
 cover: "/images/games/emergency-hospital.png"
 tags: ["Pocket Burger Games", "Unity"]
 status: "sunset"
-draft: false
+draft: true
 ---
 
 https://apkpure.com/emergency-hospital/com.pocketburger.tomato

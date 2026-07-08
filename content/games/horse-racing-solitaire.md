@@ -3,7 +3,7 @@ title: "Horse Racing Solitaire"
 date: 2024-01-01
 description: "Horse Racing Solitaire - Horse Racing meets solitaire"
 cover: "/images/games/hrs.png"
-tags: ["Salto Games", "Unity"]
+tags: ["Salto Games", "Unity", "Metaplay"]
 status: "released"
 draft: false
 ---
