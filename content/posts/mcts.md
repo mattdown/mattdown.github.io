@@ -13,7 +13,7 @@ applications. The algorithm itself is relatively simple and should be seen maybe
 At a high level how does MCTS work? Instead of exhaustively searching all possibilities, MCTS searches the tree in a 
 principled way that prioritises exploration of the most promising paths within that tree.
 
-I always believe the best way to learn about something is via a hands-on demo, so check out the demo here. Play on the board in
+I always believe the best way to learn is by doing, so check out the demo below. Play on the board in
 the top right and see how the predicted winner changes as the game progresses. The tree evolves to show which paths work out best for
 which player. The circle with the highlight indicates the best move. Be sure to zoom in/out to see the full details lower down the tree.
 
@@ -63,7 +63,9 @@ $$UCT = \frac{WinCount}{VisitCount} + C\sqrt{\frac{\log{(VisitCount_{parent})}}{
 Let's break this down:
 
 The first term is the win rate for this node. A higher win rate suggests a better node/action. This is also 
-referred to as the estimated **value** of this node. Note that because of how the rollout works $WinCount$ might not be an integer. 
+referred to as the estimated **value** of this node. $WinCount$ comes from the result of the rollout/simulation and is relative to whoever's turn it is.
+During backpropagation the result of the rollout is flipped at each node as it's added to the WinCount to reflect this. 
+For a single player game this wouldn't be needed.
 
 The second term is inversely related to the number of times this node has been visited relative to its sibling nodes i.e. low visit 
 counts relative to its siblings will give a higher score. The term in the numerator here $VisitCount_{parent}$ can 
@@ -73,10 +75,10 @@ step the parent visit count is equal to the sum of the child visit counts and sa
 The purpose of this second term is to balance **exploitation** vs **exploration**. If we only used the value term here we might get a 
 situation where one child node has a win rate of, say, 0.6 with only one visit and a sibling node has a win rate of 0.61 after many visits.
 It stands to reason that the node with only one visit that has only a marginally lower value score warrants further exploration. The constant $C$ 
-determines the level of exploration, and is typically set to around $1.4$
+determines the level of exploration and is typically set to around $1.4$
 
 Note that you'll often see the UCT score expressed in the more concise form where $V_i$ and $n_i$ are the win rate and the visit count at node $i$ respectively, $N$ is the parent
-visit count and $C$ is the same constant as before$:
+visit count and $C$ is the same constant as before:
 
 $$UCT = V_i + C\sqrt{\frac{\ln{N}}{n_i}}$$
 
@@ -93,7 +95,9 @@ Feel free to check out the demo again now that we've gone over the algorithm in 
 and the size of the circle indicate the visit count relative to its siblings. Note that these are the parameters used: rollout/simulation count: $5$, expansion count: $10000$
 C: $1.4$. Even running on relatively low-end hardware the algorithm plays a mean (but not unbeatable) game of Connect 4 in realtime. Well done if you manage to beat it without the hints.
 
-As a final note as to how AlphaGo/AlphaZero use MCTS - instead of exclusively relying on random rollouts to assess the value of a given node, and UCT to select which child nodes to explore. 
-AlphaGo/AlphaZero uses MCTS in combination with deep neural networks. One netowrk to act as a value network (better than random rollouts) and another as a policy network (better than a simple
-UCT score). As the model progresses they use these networks alone rather than MCTS. As you can imagine the random rollout for moves early in a 19x19 game of Go will be particularly poor at
+As a final note as to how AlphaGo/AlphaZero uses MCTS - instead of exclusively relying on random rollouts to assess the value of a given node and UCT to select which child nodes to explore. 
+AlphaGo/AlphaZero use MCTS in combination with deep neural networks. One network to act as a value network (better than random rollouts) and another as a policy network (better than a simple
+UCT score). As you can imagine, the random rollout for moves early in a 19x19 game of Go will be particularly poor at
 predicting a winner, hence the need for deep neural networks.
+
+I hope you've enjoyed this demo. For an extensive review of MCTS and its variants, I recommend this paper: https://arxiv.org/pdf/2103.04931
