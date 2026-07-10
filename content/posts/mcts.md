@@ -76,7 +76,7 @@ $$UCT = \frac{WinCount}{VisitCount} + C\sqrt{\frac{\log{(VisitCount_{parent})}}{
 Let's explore these terms further:
 
 The first term is the win rate for this node. A higher win rate suggests a better node/action. This is also 
-referred to as the estimated **value** of this node and is displayed as Q in-game. $WinCount$ comes from the result of the rollout/simulation and is relative to whoever's turn it is.
+referred to as the estimated **value** of this node and is displayed as **Q** in-game. $WinCount$ comes from the result of the rollout/simulation and is relative to whoever's turn it is.
 During backpropagation the result of the rollout is flipped at each node as it's added to the $WinCount$ to reflect this. 
 For a single-player game, this wouldn't be needed.
 
@@ -84,7 +84,7 @@ The second term is inversely related to the number of times this node has been v
 counts relative to its siblings will give a higher score. The term in the numerator here $VisitCount_{parent}$ can 
 initially appear confusing as it's referring to the parent node and not the sibling nodes. Because of the backpropagation 
 step the parent visit count is equal to the sum of the child visit counts and saves us having to sum these each time. The node's
-visit count is displayed as V in-game.
+visit count is displayed as **V** in-game.
 
 The purpose of this second term is to balance **exploitation** vs **exploration**. If we only used the value term here we might get a 
 situation where one child node has a win rate of, say, 0.6 with only one visit and a sibling node has a win rate of 0.61 after many visits.
