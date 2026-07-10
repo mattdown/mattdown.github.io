@@ -4,7 +4,7 @@ date: 2026-06-17
 mathjax: true
 tags: ["MCTS", "Monte Carlo Tree Search", "Machine Learning", "ML", "AI", "Connect 4"]
 draft: false
-thumbnail: ""
+thumbnail: "/images/mcts_thumbnail.png"
 ---
 
 ## Intro
