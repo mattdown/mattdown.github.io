@@ -97,3 +97,6 @@ UCT score). As you can imagine, the random rollout for moves early in a 19x19 ga
 predicting a winner, hence the need for deep neural networks.
 
 I hope you've enjoyed this demo. For an extensive review of MCTS and its variants, I recommend this paper: https://arxiv.org/pdf/2103.04931
+
+Finally, if you came here for the Connect 4 there's actually a better way of solving the game using alpha-beta pruning as explained here: https://www.youtube.com/watch?v=DV5d31z1xTI. I chose
+Connect 4 for the demo above as it has a limited action space which makes the tree slightly easier to view.
