@@ -9,7 +9,7 @@ thumbnail: ""
 
 ## Intro
 
-Monte Carlo Tree search (MCTS) is the famous tree-search planning algorithm used in Google DeepMind's AlphaGo as well as many other
+Monte Carlo Tree Search (MCTS) is the famous tree-search planning algorithm used in Google DeepMind's AlphaGo as well as many other
 applications. The algorithm itself is relatively simple and should be seen maybe more as a planning algorithm than a learning one.
 
 At a high level, how does MCTS work? Instead of exhaustively searching all possibilities, MCTS searches the state tree in a 
@@ -38,7 +38,7 @@ probably easiest to start explaining this algorithm once it's a few iterations i
 ### 1. Selection
 
 We start at the root node (the current board state) we traverse the tree selecting the maximum UCT score at each node. We'll explain UCT in a bit, but for now
-just treat it as a score for the most promising child note.
+just treat it as a score for the most promising child node.
 
 ### 2. Expansion
 
@@ -48,8 +48,9 @@ we're just following the rule above – the only difference is that we're just c
 
 ### 3. Rollout/Simulation
 
-We now do a rollout/simulation from this new node. This consists of playing several simulated games from this node by playing random moves,
-giving an indication of the likely result if this sequence of moves were played in-game.
+We now do a rollout/simulation from this new node. This consists of playing a simulated game from this node to completion using fast, 
+random moves. In the diagram below, this real-time random probe is represented by the fluid, wavy rollout thread, 
+giving the engine an instant, empirical snapshot of who is likely to win from that state.
 
 ### 4. Backpropagation
 
@@ -68,14 +69,18 @@ Now let's take a deeper look at the UCT score (Upper Confidence bound 1 applied 
 
 $$UCT = \frac{WinCount}{VisitCount} + C\sqrt{\frac{\log{(VisitCount_{parent})}}{VisitCount}}$$
 
-Let's break this down:
+* Exploitation (Left Term): The current calculated value ($Q$). It pulls the AI toward pathways that have already proven successful.
+
+* Exploration (Right Term): The uncertainty bonus. It dynamically expands as a parent node gains visits, systematically pulling the AI to investigate neglected sibling options.
+
+Let's explore these terms further:
 
 The first term is the win rate for this node. A higher win rate suggests a better node/action. This is also 
 referred to as the estimated **value** of this node and is displayed as Q in-game. $WinCount$ comes from the result of the rollout/simulation and is relative to whoever's turn it is.
-During backpropagation the result of the rollout is flipped at each node as it's added to the WinCount to reflect this. 
-For a single player game this wouldn't be needed.
+During backpropagation the result of the rollout is flipped at each node as it's added to the $WinCount$ to reflect this. 
+For a single-player game, this wouldn't be needed.
 
-The second term is inversely related to the number of times this node has been visited relative to its sibling nodes i.e. low visit 
+The second term is inversely related to the number of times this node has been visited relative to its sibling nodes, i.e. low visit 
 counts relative to its siblings will give a higher score. The term in the numerator here $VisitCount_{parent}$ can 
 initially appear confusing as it's referring to the parent node and not the sibling nodes. Because of the backpropagation 
 step the parent visit count is equal to the sum of the child visit counts and saves us having to sum these each time. The node's
@@ -95,11 +100,12 @@ with the highest true value.
 
 ## Final remarks
 
-Feel free to check out the demo again now that we've gone over the algorithm in more detail. The color of each line/node indicates the value component of the UCT score (win rate) 
-and the size of the circle indicate the visit count relative to its siblings. Note that these are the parameters used: rollout/simulation count: $5$, expansion count: $10000$
-C: $1.4$. Even running on relatively low-end hardware the algorithm plays a mean (but not unbeatable) game of Connect 4 in realtime. Well done if you manage to beat it without the hints.
+Feel free to check out the demo again now that we've gone over the algorithm in more detail. The color of each line/node indicates the value component of the UCT score (win-rate) 
+and the size of the circle indicate the visit count relative to its siblings. These are the parameters used: rollout/simulation count: $5$, expansion count: $10000$
+C: $1.4$ but you can change them in the settings menu. Even running on relatively low-end hardware the algorithm plays a mean (but not unbeatable) game of Connect 4 in realtime. 
+Well done if you manage to beat it without the hints. Be sure to flip the 'Show UCT Score' toggle in the settings menu to watch the raw UCT, Visit, and Value metrics update across every single node in real-time as the tree expands.
 
-As a final note as to how AlphaGo/AlphaZero uses MCTS - instead of exclusively relying on random rollouts to assess the value of a given node and UCT to select which child nodes to explore. 
+As a final note as to how AlphaGo/AlphaZero uses MCTS – instead of exclusively relying on random rollouts to assess the value of a given node and UCT to select which child nodes to explore. 
 AlphaGo/AlphaZero use MCTS in combination with deep neural networks. One network to act as a value network (better than random rollouts) and another as a policy network (better than a simple
 UCT score). As you can imagine, the random rollout for moves early in a 19x19 game of Go will be particularly poor at
 predicting a winner, hence the need for deep neural networks.
