@@ -1,0 +1,9 @@
+{{ $src := .Get "src" }}
+{{ $alt := .Get "alt" | default "" }}
+{{ $id := $src | urlize }}
+<a href="#{{ $id }}" class="lightbox-trigger">
+  <img src="{{ $src }}" alt="{{ $alt }}">
+</a>
+<a href="#" id="{{ $id }}" class="lightbox-overlay" aria-label="Close image">
+  <img src="{{ $src }}" alt="{{ $alt }}">
+</a>
