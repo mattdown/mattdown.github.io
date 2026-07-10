@@ -7,6 +7,8 @@ draft: false
 thumbnail: ""
 ---
 
+## Intro
+
 Monte Carlo Tree search (MCTS) is the famous tree-search planning algorithm used in Google DeepMind's AlphaGo as well as many other
 applications. The algorithm itself is relatively simple and should be seen maybe more as a planning algorithm than a learning one.
 
@@ -30,7 +32,7 @@ which player. The circle with the highlight indicates the best move. Be sure to 
 
 ## Algorithm breakdown
 
-Now that you've has a play let's talk about how MCTS works. The algorithm starts with just a single node in it's tree but it's 
+Now that you've had a play of the demo, let's talk about how MCTS works. The algorithm starts with just a single node in its tree, but it's 
 probably easiest to start explaining this algorithm once it's a few iterations in, so note that the first few iterations will look slightly different to this.
 
 ### 1. Selection
@@ -52,7 +54,13 @@ giving an indication of the likely result if this sequence of moves were played 
 ### 4. Backpropagation
 
 Once this simulation is complete, the result (which will be something like a 0.8 win rate for red) is propagated
-back up the tree, along with incrementing each node's visit count by 1. 
+back up the tree, along with incrementing each node's visit count by 1.
+
+### MCTS Diagram
+
+Here's a diagram representing the above steps:
+
+{{< lightbox src="/images/mcts_schematic.png" alt="MCTS diagram" >}}
 
 ### UCT score
 

@@ -267,6 +267,35 @@ body.colorscheme-dark .post-card-desc {
   overflow: hidden;
 }
 
+/* ── Lightbox ────────────────────────────────────────────── */
+
+.lightbox-trigger img {
+  cursor: zoom-in;
+  display: block;
+}
+
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 9999;
+  cursor: zoom-out;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-overlay:target {
+  display: flex;
+}
+
+.lightbox-overlay img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  cursor: zoom-out;
+}
+
 /* ── Dark theme overrides ────────────────────────────────── */
 
 body.colorscheme-dark .game-card,
