@@ -23,25 +23,29 @@ As an initial proof of concept, I'm going to look at the already highly successf
 we can train an agent to play the game and uncover some of the reasons the game dynamics work so well in this game. 
 If you've not played 1010! before, feel free to skip to the [results section](#results) where you can have a quick play.
 
-Let's look at these design principles first.
-
 ### Design principles
+
+Let's now look at two design principles that are interesting to explore in 1010!, and that we can easily build
+metrics for.
+
+But before we do that, I think there's 
+an important caveat to point out. Choosing which principles (and metrics) to focus on is part of the creative process. 
+Designers will naturally want to focus on different things, leading to games that are fun in 
+different ways. This isn't a case of AI taking over and deciding what is/isn't fun.
 
 #### Complexity of decision-making
 
-During a typical game are there an overwhelming number of plausible moves that can't easily be narrowed down? An 
-example of this being violated might be 19x19 Go to a new player. A game such as Tetris might have a large number of 
-possible placements, but it's often fairly easy to narrow to the best few.
+During a typical game is there an overwhelming number of plausible moves that can't easily be narrowed down to one 
+or two good ones? Or maybe there is a uniform distribution of plausible moves, which makes the player feel it 
+doesn't matter what they choose. How does this distribution change over time? Does it start with a small number of possibilities 
+and then balloon rapidly as the game evolves, leaving the player feeling overwhelmed?
 
 #### Inevitability of outcome
 
-Once you're, say, 50% through a typical game, how inevitable is the outcome? If you play as well as you've been 
-playing in the first half of the game, is the final result effectively set in stone? i.e. in a 2-player game 90% of the 
-time the player that's winning at the half-way point goes on to win the game.
-
-Caveat: these principles and their associated metrics are part of the creative process, different designers will 
-naturally want to focus on different metrics, leading to different games that are fun in different ways. This isn't 
-a case of AI taking over and deciding what is/isn't fun.
+Once you're part-way through a typical game, how inevitable is the survival outcome based on your play so far? 
+e.g. does a mistake on turn 2 massively impact your chance of survival 100 moves later, or does it only 
+impact your survival chances over the next 10 moves? The latter feels much better to players as it makes them feel they 
+still have something to continue to play for even if things aren't looking great.
 
 ## Methodology
 
@@ -87,6 +91,10 @@ from its own games (self-play). The whole thing took ~37 minutes on a laptop.
 During development, all the game logic lives in Python. The Unity client only handles the board, drag and drop and
 animations. It sends each move to a Python game server as JSON over ZeroMQ, and the server checks the move, applies it
 and sends the new board back. That way there's a single copy of the rules, shared with training and the analysis.
+
+The big advantage of setting it up like this is that the game lives right next to the machine learning code, so the
+model can be trained directly with PyTorch. Training plays its games in Python without Unity in the loop, so it can
+get through thousands of them quickly.
 
 The web version you can play below has no Python server to talk to, so the rules were ported to C# and the network
 exported to ONNX, which runs in the browser with Unity's Inference Engine. The client has a local mode that gives the
@@ -178,7 +186,8 @@ A few things stand out:
 
 - **There's a lot of choice, but it can be narrowed down.** A typical board allows ~44 legal moves (5.4 bits), but the
   agent only treats ~16 of them as serious candidates (4.0 bits). That feels like a good place for a puzzle game to
-  sit. It's far from obvious, but it's not an overwhelming Go-style wall of options either.
+  sit. It's far from obvious, but it's not an overwhelming Go-style wall of options either. And
+  it's not the case that every move is as good as any other.
 - **It's remarkably flat.** After the opening (the empty board allows loads of moves), both entropies settle within
   ~30–40 turns and then stay flat for hundreds of moves. The board doesn't slowly fill up over time.
 - **Then it collapses.** Over the last ~20–30 moves both drop sharply. The agent's entropy starts falling slightly
