@@ -58,8 +58,4 @@ weight = 3
   name = "linkedin"
   link = "https://www.linkedin.com/in/matt-down-1475404b/"
 
-  [[params.social]]
-    name = "github"
-    link = "https://github.com/mattdown"
-
 
