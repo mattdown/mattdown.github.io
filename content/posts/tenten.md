@@ -1,10 +1,10 @@
 ---
-title: "Using an AI Agent to understand game dynamics in 1010!"
-date: 2026-08-21
+title: "Using an AI Agent to explore game dynamics in 1010!"
+date: 2026-09-28
 mathjax: true
 tags: ["Machine Learning", "ML", "Reinforcement Learning", "RL", "AI", "Game Design", "Game Prototyping"]
-draft: true
-thumbnail: "/images/tenten/value_recovery.png"
+draft: false
+thumbnail: "/images/tenten/tenten_thumbnail.png"
 ---
 
 ## Intro
@@ -140,7 +140,7 @@ position later, and players who fall behind should rarely recover. So I look at:
 
 ## Results
 
-Here are the results. But first, here's the unity game with the agent offering hints to give you an idea of how it
+Here are the results. But first, here's the Unity game with the agent offering hints to give you an idea of how it
 plays.
 
 {{< unity-webgl
@@ -367,19 +367,17 @@ The value starts at ~0.48 on the empty board and settles within ~30 turns. Game 
 dip threshold, the same stretch as its entropy trough, then climbs back above typical. Game 816 dips deep (~0.18)
 around turns 70–95 and recovers.
 
-### G. Caveats
+### G. Limitations and next steps
 
 - **The value is the network's opinion, not the truth.** How short-sighted it is partly reflects how it was trained:
   a 0.98 discount (a ~50-move horizon) and targets taken from games with 50% random moves, not from its own greedy
-  play. So "how inevitable the outcome is" is measured *through* the network. A cleaner test would be to replay the
-  same position many times with different deals and measure how widely the outcomes spread.
+  play. So "how inevitable the outcome is" is measured *through* the network. A more direct test is to replay the
+  same position many times with different deals and measure how widely the outcomes spread. That's a good experiment
+  for the follow-up post.
 - **The 3rd-piece blind spot.** When one piece is left, the network scores each candidate position with all three
   piece slots empty, which never occurs in training. The last piece of each hand is therefore judged partly outside
-  what the network has seen.
-- **One agent style.** Everything here is for a one-step greedy agent. Adding search or look-ahead could change these
-  results quite a bit.
-- **No fixed random seed.** Reruns give slightly different numbers: the same model averaged 301 turns over 1000 games
-  and 298 over 300 games.
+  what the network has seen. This is a known issue with a straightforward fix: include those positions in the
+  training data and retrain.
 
 ---
 
