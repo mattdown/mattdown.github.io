@@ -19,6 +19,10 @@ cover in the next section, before changing the game balance and rules to hit tho
 
 {{< lightbox src="/images/tenten/design_loop.png" alt="The design loop: change the rules, playtest with an AI agent, measure design metrics, then tune" >}}
 
+This isn't a new idea. Researchers have been using AI players to explore game designs since at least the late 2000s,
+and I've listed some of the work I've found most interesting in [Related work](#related-work) at the end. What's
+changed is how accessible it's become: the agent in this post trained in about 40 minutes on a laptop.
+
 As an initial proof of concept, I'm going to look at the already highly successful puzzle game **1010!** and show how 
 we can train an agent to play the game and uncover some of the reasons the game dynamics work so well in this game. 
 If you've not played 1010! before, feel free to skip to the [results section](#results) where you can have a quick play.
@@ -272,6 +276,37 @@ design principles, but also the exact numbers that 1010! hits.
 
 That's only half of the loop from the intro though. In a follow-up post I'll close it by changing the rules and
 balance of 1010! and seeing how these metrics move.
+
+## Related work
+
+Using AI players to explore game designs has a surprisingly long history. Here's some of the work closest to this
+post, if you want to dig deeper:
+
+- **Measuring what makes a game good.** Cameron Browne's [Ludi system](https://link.springer.com/article/10.1007/s10710-012-9165-6)
+  (*Evolutionary Game Design*) evolved new board games and scored them through self-play against 57 aesthetic
+  criteria. These include *drama* (players should have hope of recovering from bad positions) and *uncertainty* (the
+  outcome should remain uncertain for as long as possible), which are very close to the inevitability metric here.
+  One of its games, Yavalath, became the first commercially released board game designed entirely by a machine.
+- **Exploring a game's parameter space.** Isaksen, Gopstein and Nealen's
+  [Exploring Game Space Using Survival Analysis](http://www.nealen.net/papers/exploring-game-space-FDG2015.pdf) used an
+  AI player to explore thousands of variants of Flappy Bird, predicting each one's difficulty from the distribution
+  of scores. It's the nearest thing I know of to this post: a simple score-based game, measured by how long players
+  survive.
+- **Changing the rules with a superhuman agent.** DeepMind's
+  [Assessing Game Balance with AlphaZero](https://arxiv.org/abs/2009.04374), with former world champion Vladimir
+  Kramnik, trained AlphaZero on nine rule variants of chess and compared how decisive each one was. This is the full
+  design loop from the intro, just with a vastly bigger agent.
+- **Mobile puzzle games.** Roohi et al.'s
+  [Predicting Game Difficulty and Churn Without Players](https://arxiv.org/abs/2008.12937) combined deep
+  reinforcement learning agents with a simulated player population to predict pass rates and churn for each level of
+  Angry Birds Dream Blast.
+- **Letting AI change the rules too.** More recently, language models have started to take on the designer's side of
+  the loop. [GAVEL](https://arxiv.org/abs/2407.09388) uses a language model to mutate and recombine board games
+  written as code, and [RuleSmith](https://arxiv.org/abs/2602.06232) uses LLM agents playing each other, plus
+  Bayesian optimisation, to tune the rules of a civilization-style game for balance.
+
+For a broader overview, [AI for Games in the Foundation Model Era](https://arxiv.org/abs/2609.16679) is a recent
+survey of how large AI models are being used across game development, from playing and design through to testing.
 
 ## Appendix
 
