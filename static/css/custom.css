@@ -310,3 +310,13 @@ body.colorscheme-dark .game-desc {
 body.colorscheme-dark .status-released  { background: #1a3a22; color: #6fcf97; }
 body.colorscheme-dark .status-in-progress { background: #3a3010; color: #f2c94c; }
 body.colorscheme-dark .status-jam       { background: #1a1f4a; color: #a5b4fc; }
+
+/* ── Post tables ─────────────────────────────────────────── */
+
+/* The theme sets overflow: auto on tables, which adds a vertical scrollbar when
+   inline MathJax is a few pixels taller than the row. Keep horizontal scrolling
+   for wide tables on small screens only. */
+.content table {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

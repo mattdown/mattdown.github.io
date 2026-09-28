@@ -65,31 +65,52 @@ Here's a diagram representing the above steps:
 
 ### UCT score
 
-Now let's take a deeper look at the UCT score (Upper Confidence bound 1 applied to Trees), given by the following formula:
+Now let's take a deeper look at the UCT score (Upper Confidence bound 1 applied to Trees). Flip on 'Show UCT Score'
+in the settings menu and each node in the demo shows three numbers:
 
-$$UCT = \frac{WinCount}{VisitCount} + C\sqrt{\frac{\log{(VisitCount_{parent})}}{VisitCount}}$$
+| In the demo | What it is | Definition |
+|---|---|---|
+| **N** | Visit count: how many times the search has passed through this node | $N$ |
+| **Q** | Value: the node's average rollout result, i.e. its win rate | $Q = \frac{W}{N}$ |
+| **UCT** | The score used to decide which child to explore next | $Q + C\sqrt{\frac{\ln N_{parent}}{N}}$ |
 
-* Exploitation (Left Term): The current calculated value ($Q$). It pulls the AI toward pathways that have already proven successful.
+Here $W$ is the total result backpropagated through the node (1 for a win, 0.5 for a draw and 0 for a loss),
+$N_{parent}$ is the parent's visit count and $C$ is a constant. Written out with its two parts labelled:
 
-* Exploration (Right Term): The uncertainty bonus. It dynamically expands as a parent node gains visits, systematically pulling the AI to investigate neglected sibling options.
+$$UCT = \underbrace{Q}_{\text{exploitation}} + \underbrace{C\sqrt{\frac{\ln N_{parent}}{N}}}_{\text{exploration}}$$
+
+* Exploitation (left term): the node's current value, $Q$. It pulls the AI toward pathways that have already proven successful.
+
+* Exploration (right term): the uncertainty bonus. It grows as the parent gains visits, pulling the AI to investigate neglected sibling options.
 
 Let's explore these terms further:
 
-The first term is the win rate for this node. A higher win rate suggests a better node/action. This is also 
-referred to as the estimated **value** of this node and is displayed as **Q** in-game. $WinCount$ comes from the result of the rollout/simulation and is relative to whoever's turn it is.
-During backpropagation the result of the rollout is flipped at each node as it's added to the $WinCount$ to reflect this. 
-For a single-player game, this wouldn't be needed.
+The first term is the win rate for this node, $Q$. A higher win rate suggests a better node/action. $W$ comes from the
+results of the rollouts/simulations and is counted from the point of view of the player who made the move into this
+node. That's the player choosing at the parent, so they can simply pick the child with the highest score. Because the
+players alternate, the result of a rollout is flipped at each level during backpropagation as it's added to $W$. For a
+single-player game, this wouldn't be needed.
 
-The second term is inversely related to the number of times this node has been visited relative to its sibling nodes, i.e. low visit 
-counts relative to its siblings will give a higher score. The term in the numerator here $VisitCount_{parent}$ can 
-initially appear confusing as it's referring to the parent node and not the sibling nodes. Because of the backpropagation 
-step the parent visit count is equal to the sum of the child visit counts and saves us having to sum these each time. The node's
-visit count is displayed as **V** in-game.
+The second term is inversely related to the number of times this node has been visited relative to its sibling nodes,
+i.e. low visit counts relative to its siblings will give a higher score. The term in the numerator here, $N_{parent}$,
+can initially appear confusing as it's referring to the parent node and not the sibling nodes. Because of the
+backpropagation step the parent visit count is equal to the sum of the child visit counts, which saves us having to
+sum these each time. A node that has never been visited has $N = 0$, so its exploration term is infinite, which is
+why unexplored children always get picked first in the expansion step.
 
-The purpose of this second term is to balance **exploitation** vs **exploration**. If we only used the value term here we might get a 
-situation where one child node has a win rate of, say, 0.6 with only one visit and a sibling node has a win rate of 0.61 after many visits.
-It stands to reason that the node with only one visit that has only a marginally lower value score warrants further exploration. The constant $C$ 
-determines the level of exploration and is typically set to around $1.4$
+The purpose of this second term is to balance **exploitation** vs **exploration**. If we only used the value term we
+might get a situation where one child node has a win rate of, say, 0.60 with only 10 visits and a sibling has a win
+rate of 0.61 after 80 visits. It stands to reason that the node with far fewer visits and only a marginally lower
+value warrants further exploration, and UCT does exactly that. With $C = 1.4$ and a parent with $N = 100$
+($\ln 100 \approx 4.61$):
+
+* Child A: $Q = 0.60$, $N = 10$, so $UCT = 0.60 + 1.4\sqrt{4.61/10} \approx 0.60 + 0.95 = 1.55$
+* Child B: $Q = 0.61$, $N = 80$, so $UCT = 0.61 + 1.4\sqrt{4.61/80} \approx 0.61 + 0.34 = 0.95$
+
+So A gets explored next despite its slightly lower win rate. You can check the same sums against any node in the demo.
+
+The constant $C$ determines the level of exploration. In theory it's $\sqrt{2} \approx 1.41$ for results between 0
+and 1, and in practice it's typically set to around $1.4$ and tuned from there.
 
 ### Action selection
 
@@ -103,7 +124,7 @@ with the highest true value.
 Feel free to check out the demo again now that we've gone over the algorithm in more detail. The color of each line/node indicates the value component of the UCT score (win-rate) 
 and the size of the circle indicate the visit count relative to its siblings. These are the parameters used: rollout/simulation count: $5$, expansion count: $10000$
 C: $1.4$ but you can change them in the settings menu. Even running on relatively low-end hardware the algorithm plays a mean (but not unbeatable) game of Connect 4 in realtime. 
-Well done if you manage to beat it without the hints. Be sure to flip the 'Show UCT Score' toggle in the settings menu to watch the raw UCT, Visit, and Value metrics update across every single node in real-time as the tree expands.
+Well done if you manage to beat it without the hints. Be sure to flip the 'Show UCT Score' toggle in the settings menu to watch the UCT, N (visits) and Q (value) numbers update across every single node in real-time as the tree expands.
 
 As a final note as to how AlphaGo/AlphaZero uses MCTS – instead of exclusively relying on random rollouts to assess the value of a given node and UCT to select which child nodes to explore. 
 AlphaGo/AlphaZero use MCTS in combination with deep neural networks. One network to act as a value network (better than random rollouts) and another as a policy network (better than a simple
