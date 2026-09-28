@@ -10,33 +10,33 @@ thumbnail: "/images/tenten/value_recovery.png"
 ## Intro
 
 For a while now I've been interested in **AI accelerated design space exploration**. It's a compelling approach that 
-would allow the rapid iteration or game rules and balance. As someone who's spent a lot of their career working on 
+allows the rapid iteration of game rules and balance. As someone who's spent a lot of their career working on 
 early stage prototypes, I've seen firsthand how important it is to nail the core mechanics of a game.
 
 So how does that work? You first need to train an agent that is capable of playing the game in a way that it 
 can react to balance changes and even rule changes. Then you define some metrics based on game dynamics that I'll 
 cover in the next section, before changing the game balance and rules to hit those metrics.
 
-**SHOW DIAGRAM HERE OF FEEDBACK FLOW**
+{{< lightbox src="/images/tenten/design_loop.png" alt="The design loop: change the rules, playtest with an AI agent, measure design metrics, then tune" >}}
 
 As an initial proof of concept, I'm going to look at the already highly successful puzzle game **1010!** and show how 
 we can train an agent to play the game and uncover some of the reasons the game dynamics work so well in this game. 
-If you've not played 1010! before, feel free to skip to the results section where you can have a quick play.
+If you've not played 1010! before, feel free to skip to the [results section](#results) where you can have a quick play.
 
-Let's look at these design principles/metrics first.
+Let's look at these design principles first.
 
-### Design principles and their metrics
+### Design principles
 
 #### Complexity of decision-making
 
-During a typical game are there an overwhelming number of plausible moves that can't easily be narrowed down. An 
-example of this being violated might be 19x19 Go to a new player. A game such a Tetris might have a large number of 
+During a typical game are there an overwhelming number of plausible moves that can't easily be narrowed down? An 
+example of this being violated might be 19x19 Go to a new player. A game such as Tetris might have a large number of 
 possible placements, but it's often fairly easy to narrow to the best few.
 
 #### Inevitability of outcome
 
-Once you're, say, 50% through a typical game. How inevitable is the outcome. If you play as well as you've been 
-playing in the first half of the game is the final result effectively set in stone. i.e. in a 2-player game 90% of the 
+Once you're, say, 50% through a typical game, how inevitable is the outcome? If you play as well as you've been 
+playing in the first half of the game, is the final result effectively set in stone? i.e. in a 2-player game 90% of the 
 time the player that's winning at the half-way point goes on to win the game.
 
 Caveat: these principles and their associated metrics are part of the creative process, different designers will 
@@ -80,6 +80,20 @@ For training, a hand-written heuristic agent (which likes clearing lines and dis
 batch of games. The network learned from those, overtook the heuristic after a single round, and from then on learned
 from its own games (self-play). The whole thing took ~37 minutes on a laptop.
 
+### Unity - Python pipeline
+
+{{< lightbox src="/images/tenten/how_the_game_runs.png" alt="How the game runs: Unity talking to a Python server in development, and fully in the browser for the WebGL build" >}}
+
+During development, all the game logic lives in Python. The Unity client only handles the board, drag and drop and
+animations. It sends each move to a Python game server as JSON over ZeroMQ, and the server checks the move, applies it
+and sends the new board back. That way there's a single copy of the rules, shared with training and the analysis.
+
+The web version you can play below has no Python server to talk to, so the rules were ported to C# and the network
+exported to ONNX, which runs in the browser with Unity's Inference Engine. The client has a local mode that gives the
+same responses as the Python server, so the rest of the game doesn't know the difference. To make sure nothing got
+lost in translation, the C# port and the exported model were checked against real positions exported from the Python
+game.
+
 ### Calculating and defining metrics
 
 Now to turn the two design principles from earlier into hard metrics that can be measured.
@@ -115,10 +129,6 @@ position later, and players who fall behind should rarely recover. So I look at:
 - **Dips and recoveries:** I call it a **dip** when the value falls into the bottom 10% of mid-game values, and a
   **recovery** when it climbs back to the typical (median) value before game over. What fraction of dips recover,
   and how quickly?
-
-### Unity - Python pipeline
-
-**show technical diagram here**!
 
 ## Results
 
@@ -239,7 +249,7 @@ The endings come in roughly three flavours:
 
 ### What do these metrics tell us about 1010!?
 
-On **complexity of decision-making**, yes. There are always plenty of legal moves, but the agent can narrow them down
+On **complexity of decision-making**, 1010! sits in a sweet spot. There are always plenty of legal moves, but the agent can narrow them down
 to a manageable shortlist of ~16. That stays consistent for the whole game, until the final crunch.
 
 On **inevitability of outcome**, 1010! is very much *not* inevitable, and I think that's a big part of why it works.
@@ -249,7 +259,10 @@ tension. As a caveat, all of this is measured through the network's opinion, whi
 this in the appendix).
 
 When designing new casual puzzle games these can be used to guide your own game dynamics, both in terms of the 
-design principles, but also the exact numbers that 1010! hits. 
+design principles, but also the exact numbers that 1010! hits.
+
+That's only half of the loop from the intro though. In a follow-up post I'll close it by changing the rules and
+balance of 1010! and seeing how these metrics move.
 
 ## Appendix
 
@@ -290,6 +303,8 @@ moves, so positions 100 or 500 moves from death have almost the same target. The
 them apart.
 
 ### D. Training
+
+{{< lightbox src="/images/tenten/training_and_analysis.png" alt="How the AI was trained and analysed" >}}
 
 - **Data generation:** each generation plays 1000 games with a "teacher" agent, which makes a random move 50% of the
   time for variety. Every position is recorded with its discounted return, computed backwards from game over (+1
