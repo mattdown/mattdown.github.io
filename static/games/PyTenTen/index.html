@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width=2000 height=2000 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -55,9 +55,9 @@
       var loaderUrl = buildUrl + "/PyTenTen.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/PyTenTen.data.br",
-        frameworkUrl: buildUrl + "/PyTenTen.framework.js.br",
-        codeUrl: buildUrl + "/PyTenTen.wasm.br",
+        dataUrl: buildUrl + "/PyTenTen.data.unityweb",
+        frameworkUrl: buildUrl + "/PyTenTen.framework.js.unityweb",
+        codeUrl: buildUrl + "/PyTenTen.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "PyTenTenClient",
@@ -104,8 +104,8 @@
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "2000px";
+        canvas.style.height = "2000px";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";

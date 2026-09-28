@@ -154,7 +154,14 @@ position later, and players who fall behind should rarely recover. So I look at:
 Here are the results. But first, here's the unity game with the agent offering hints to give you an idea of how it
 plays.
 
-**embed game here**
+{{< unity-webgl
+  buildPath="/games/PyTenTen/Build"
+  buildName="PyTenTen"
+  fileSuffix=".unityweb"
+  title="1010! with AI hints"
+  width="2000"
+  height="2000"
+>}}
 
 All the results below come from 1000 games played by the agent, 300,889 moves in total.
 
