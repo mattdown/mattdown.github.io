@@ -19,13 +19,17 @@ cover in the next section, before changing the game balance and rules to hit tho
 
 {{< lightbox src="/images/tenten/design_loop.png" alt="The design loop: change the rules, playtest with an AI agent, measure design metrics, then tune" >}}
 
-This isn't a new idea. Researchers have been using AI players to explore game designs since at least the late 2000s,
-and I've listed some of the work I've found most interesting in [Related work](#related-work) at the end. What's
-changed is how accessible it's become: the agent in this post trained in about 40 minutes on a laptop.
+The loop above shows the idea: train an agent to playtest the game, measure design metrics from how it plays, then
+adjust the rules and balance to hit them. Researchers have been trying this, and variants of it, since at least the
+late 2000s, and I've listed some of the work I've found most interesting in [Related work](#related-work) at the end.
 
-As an initial proof of concept, I'm going to look at the already highly successful puzzle game **1010!** and show how 
-we can train an agent to play the game and uncover some of the reasons the game dynamics work so well in this game. 
-If you've not played 1010! before, feel free to skip to the [results section](#results) where you can have a quick play.
+As an initial step into this world, I'm going to look at AI agent playtesting and design metrics in the already
+highly successful puzzle game [**1010!**](https://gram.gs/game-detail-1010.html) by Gram Games (available on the
+[App Store](https://apps.apple.com/us/app/1010-block-puzzle-game/id911793120) and
+[Google Play](https://play.google.com/store/apps/details?id=com.gramgames.tenten)). I'll show how we can train an
+agent to play the game and uncover some of the reasons its game dynamics work so well.
+If you've not played 1010! before, feel free to skip to the [results section](#results) where you can have a quick
+play of my version.
 
 ### Design principles
 
@@ -145,13 +149,15 @@ position later, and players who fall behind should rarely recover. So I look at:
 ## Results
 
 Here are the results. But first, here's the Unity game with the agent offering hints to give you an idea of how it
-plays.
+plays. Note that the network runs on-device, in the browser, and it's fast enough that it could also work as a hints
+system in a production build. This is an unofficial recreation made for research purposes, and isn't affiliated with
+Gram Games.
 
 {{< unity-webgl
   buildPath="/games/PyTenTen/Build"
   buildName="PyTenTen"
   fileSuffix=".unityweb"
-  title="1010! with AI hints"
+  title="1010!-style puzzle with AI hints"
   width="2000"
   height="2000"
 >}}
