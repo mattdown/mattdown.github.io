@@ -282,7 +282,7 @@ balance of 1010! and seeing how these metrics move.
 Using AI players to explore game designs has a surprisingly long history. Here's some of the work closest to this
 post, if you want to dig deeper:
 
-- **Measuring what makes a game good.** Cameron Browne's [Ludi system](https://link.springer.com/article/10.1007/s10710-012-9165-6)
+- **Measuring what makes a game good.** Cameron Browne's [Ludi system](https://cambolbro.com/cv/publications/ciaig-browne-maire-19.pdf)
   (*Evolutionary Game Design*) evolved new board games and scored them through self-play against 57 aesthetic
   criteria. These include *drama* (players should have hope of recovering from bad positions) and *uncertainty* (the
   outcome should remain uncertain for as long as possible), which are very close to the inevitability metric here.
@@ -290,8 +290,7 @@ post, if you want to dig deeper:
 - **Exploring a game's parameter space.** Isaksen, Gopstein and Nealen's
   [Exploring Game Space Using Survival Analysis](http://www.nealen.net/papers/exploring-game-space-FDG2015.pdf) used an
   AI player to explore thousands of variants of Flappy Bird, predicting each one's difficulty from the distribution
-  of scores. It's the nearest thing I know of to this post: a simple score-based game, measured by how long players
-  survive.
+  of scores.
 - **Changing the rules with a superhuman agent.** DeepMind's
   [Assessing Game Balance with AlphaZero](https://arxiv.org/abs/2009.04374), with former world champion Vladimir
   Kramnik, trained AlphaZero on nine rule variants of chess and compared how decisive each one was. This is the full
