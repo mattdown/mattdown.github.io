@@ -1,5 +1,5 @@
 ---
-title: "Can AI Design a Tactical Card Game from scratch? Part 1"
+title: "Can AI Design a Tradeable Card Game from scratch? Part 1"
 date: 2026-07-13
 mathjax: true
 tags: ["TCG", "Machine Learning", "ML", "AI", "Graph Neural Networks", "GNNs"]
@@ -48,9 +48,8 @@ chance a new edge will be formed between two people? GNNs work by applying a tra
 node and to the edges that allow information to be propagated throughout the graph. This then can be used to make 
 prediction on a node, edge or graph level.
 
-This approach has been used very successfully to train agents in Go and Chess, both allowing agents to train far 
-more rapidly but starting on smaller board sizes and building up, and also to train to a higher level than previous 
-more rigid agents such as AlphaGo.
+This approach has been used very successfully to train agents in Go and Chess, allowing agents to train far 
+more rapidly by starting on smaller board sizes and building up compared to models such as AlphaGo.
 
 The setup for these games roughly follows this approach is described here for Chess: each node is a square, which 
 contains which piece type it contains. Edges represent the legal moves from a given square. A global node can 
