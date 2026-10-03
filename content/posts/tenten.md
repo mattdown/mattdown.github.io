@@ -189,20 +189,26 @@ that in mind, luck comes back later.
 
 {{< lightbox src="/images/tenten/action_entropy.png" alt="Legal-move and agent entropy over the course of a game" >}}
 
-The top row shows both entropies over the course of a game (blue for legal moves, orange for the agent). On the left
-the games are lined up by when they ended, on the right by when they started. Lines are the median across games, the
-bands cover the middle 50%.
+The top row shows both entropies at the start and end of a game (blue for legal moves, orange for the agent). I've
+cropped it to the first and last 150 moves, because that's where everything happens. The middle of the game is flat
+all the way through. On the left the games are lined up by when they ended, on the right by when they started. Lines
+are the median across games, the bands cover the middle 50%, and the dashed lines are the typical mid-game value.
 
 A few things stand out:
 
-- **There's a lot of choice, but it can be narrowed down.** A typical board allows ~53 legal moves (5.7 bits), but the
-  agent only treats ~22 of them as serious candidates (4.5 bits). That feels like a good place for a puzzle game to
-  sit. It's far from obvious, but it's not an overwhelming Go-style wall of options either. And
-  it's not the case that every move is as good as any other.
-- **It's remarkably flat.** After the opening (the empty board allows loads of moves), both entropies settle within
-  ~30–50 turns and then stay flat for hundreds, even thousands, of moves. The board doesn't slowly fill up over time.
-- **Then it collapses.** Over the last ~20–30 moves both drop sharply. The agent's entropy starts falling slightly
-  before the legal-move count, which fits running out of *good* moves before you run out of *legal* ones.
+- **There's a lot of choice, but it can be narrowed down.** A typical mid-game board allows ~58 legal moves (5.9
+  bits), but the agent only treats ~27 of them as serious candidates (4.75 bits). That feels like a good place for a
+  puzzle game to sit. It's far from obvious, but it's not an overwhelming Go-style wall of options either. And it's
+  not the case that every move is as good as any other.
+- **It's remarkably flat.** After the opening (the empty board allows loads of moves), the legal-move count settles
+  within ~40 turns and the agent within ~50. Then both sit on the dashed line for hundreds, even thousands, of moves.
+  The board doesn't slowly fill up over time.
+- **Then it collapses.** The agent's entropy starts to fall ~35–40 moves before game over, about 10 moves before the
+  legal-move count, and both drop steeply over the last ~10. That fits running out of *good* moves before you run
+  out of *legal* ones.
+- **The agent gets more decisive under pressure.** The bottom row divides the agent's entropy by the legal-move
+  entropy. It starts near 1 on the empty board (almost every move looks fine), settles at ~0.87, then drops to ~0.63
+  over the last ~25 moves as one move increasingly stands out.
 
 The medians hide a lot of move-to-move variety though. Here are the first 100 moves of 10 individual games, with each
 hand of 3 shaded:
@@ -216,16 +222,22 @@ best (probably a line clear on offer), and longer troughs lasting several hands 
 
 {{< lightbox src="/images/tenten/action_entropy_hand_cycle.png" alt="Entropy by position in the 3-piece hand" >}}
 
-Splitting this up by position in the hand makes the rhythm clear:
+Splitting the mid-game up by position in the hand makes the rhythm clear. The boxes cover the middle 50% of moves,
+and the medians are:
 
 | | 1st piece (3 in hand) | 2nd piece (2 in hand) | 3rd piece (1 in hand) |
 |---|---|---|---|
 | Legal moves | 6.52 bits | 6.00 bits | 4.95 bits |
 | Agent | 5.06 bits | 5.21 bits | 4.31 bits |
 
-The board's freedom pulses strongly with the hand, but the agent's decisions only weakly do. Having 3 pieces gives
-you more placements, but it doesn't make the decision harder, and the 2nd piece is actually the hardest call. My guess (untested) is that with 3 pieces the playing order
-matters a lot, e.g. setting up a line clear, which makes one move stand out.
+The legal moves fall by ~1.6 bits across every hand, from ~90 options on the 1st piece to ~30 on the 3rd. With one
+piece left there's nothing easier to fall back on, so the last piece is where the board runs out of room.
+
+The agent's cycle is much weaker. The 3rd piece is the most decisive, but the 2nd is actually the hardest call, not
+the 1st. More telling is the size of the agent's boxes: they're far taller than the legal-move ones and overlap
+heavily, so how hard a decision is depends much more on the position than on where you are in the hand. My guess
+(untested) for the 1st piece is that with 3 pieces the playing order matters a lot, e.g. setting up a line clear,
+which makes one move stand out.
 
 ### Inevitability of outcome
 
@@ -270,7 +282,7 @@ The endings come in roughly three flavours:
 ### What do these metrics tell us about 1010!?
 
 On **complexity of decision-making**, 1010! sits in a sweet spot. There are always plenty of legal moves, but the agent can narrow them down
-to a manageable shortlist of ~22. That stays consistent for the whole game, until the final crunch.
+to a manageable shortlist of ~27. That stays consistent for the whole game, until the final crunch.
 
 On **inevitability of outcome**, 1010! is very much *not* inevitable, and I think that's a big part of why it works.
 Being halfway through a game tells you almost nothing about how it'll end. A bad position is usually recoverable,
@@ -387,7 +399,7 @@ score for the best move available there.
   best and the median move is only ~0.01–0.06, so at $T = 1$ every move would look equally likely. $T$ is a free
   parameter. The patterns hold across temperatures, but the absolute numbers depend on it.
 - **Normalised entropy:** $H / \log_2 N$, from 0 to 1. This is the agent's decisiveness *relative to* how many options
-  it has (the bottom row of the entropy chart). It sits at ~0.85 for most of the game and dips to ~0.63 at the
+  it has (the bottom row of the entropy chart). It sits at ~0.87 for most of the game and dips to ~0.63 at the
   end.
 - **Mid-game:** turn 30 onwards, excluding the last 30 moves. Used for the steady-state analyses, because entropy and
   value are still settling after the empty board early on, and collapse at the end.
