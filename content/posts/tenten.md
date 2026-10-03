@@ -150,8 +150,7 @@ position later, and players who fall behind should rarely recover. So I look at:
 
 Here are the results. But first, here's the Unity game with the agent offering hints to give you an idea of how it
 plays. Note that the network runs on-device, in the browser, and it's fast enough that it could also work as a hints
-system in a production build. This is an unofficial recreation made for research purposes, and isn't affiliated with
-Gram Games.
+system in a production build. This is an unofficial recreation made for research purposes.
 
 {{< unity-webgl
   buildPath="/games/PyTenTen/Build"
@@ -309,9 +308,6 @@ post, if you want to dig deeper:
   the loop. [GAVEL](https://arxiv.org/abs/2407.09388) uses a language model to mutate and recombine board games
   written as code, and [RuleSmith](https://arxiv.org/abs/2602.06232) uses LLM agents playing each other, plus
   Bayesian optimisation, to tune the rules of a civilization-style game for balance.
-
-For a broader overview, [AI for Games in the Foundation Model Era](https://arxiv.org/abs/2609.16679) is a recent
-survey of how large AI models are being used across game development, from playing and design through to testing.
 
 ## Appendix
 
