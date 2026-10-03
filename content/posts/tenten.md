@@ -66,12 +66,14 @@ I implemented a 1010!-style block puzzle in Python. The rules are:
 
 - A 10×10 grid that starts empty.
 - You're dealt a hand of **3 random pieces**. You have to place all 3, in any order, before you get the next 3.
-- There are 16 piece shapes (lines, squares and L shapes) and they can't be rotated.
+- There are 19 piece shapes, the same set as the real game (a single dot, lines, squares and L shapes), and they
+  can't be rotated.
 - Any completely filled row or column is cleared.
 - It's game over when none of the pieces left in your hand fit anywhere.
 
 For scoring I've used **turns survived**, i.e. the number of pieces placed. The real game awards points for line
-clears, but survival is what actually matters and it keeps the analysis simple.
+clears, but survival is what actually matters and it keeps the analysis simple. The agent gets good enough that
+games are capped at 2000 turns, so it can't play forever.
 
 The 3-piece hand turns out to be quite important. It means every game runs in exact 3-move cycles, and you'll see
 that rhythm show up all over the results.
@@ -90,7 +92,7 @@ parameters.
 
 For training, a hand-written heuristic agent (which likes clearing lines and dislikes leaving holes) played the first
 batch of games. The network learned from those, overtook the heuristic after a single round, and from then on learned
-from its own games (self-play). The whole thing took ~37 minutes on a laptop.
+from its own games (self-play). The whole thing took ~2 hours on a laptop.
 
 ### Unity - Python pipeline
 
@@ -161,7 +163,7 @@ system in a production build. This is an unofficial recreation made for research
   height="2000"
 >}}
 
-All the results below come from 1000 games played by the agent, 300,889 moves in total.
+All the results below come from 1000 games played by the agent, 649,667 moves in total.
 
 ### Agent training
 
@@ -169,19 +171,21 @@ Here's how the trained agent compares with the heuristic and with random play:
 
 | Agent | Games | Mean turns survived | Median | Best |
 |---|---|---|---|---|
-| Random | 500 | 17 | 17 | 37 |
-| Heuristic | 200 | 118 | 97 | 374 |
-| **Neural network** | 1000 | **301** | **220** | **1811** |
+| Random | 500 | 19 | 19 | 44 |
+| Heuristic | 500 | 279 | 218 | 1244 |
+| **Neural network** | 1000 | **650** | **511** | **2000** (the cap) |
 
-So the network survives ~2.5× longer than the heuristic and ~18× longer than random play. That's pretty good for a
-network this small with no look-ahead.
+So the network survives ~2.3× longer than the heuristic and ~34× longer than random play. That's pretty good for a
+network this small with no look-ahead. 36 of its 1000 games hit the 2000-turn cap, so if anything these numbers
+undersell it a little.
 
 {{< lightbox src="/images/tenten/score_distribution.png" alt="Histogram of turns survived over 1000 games" >}}
 
 The spread of scores is interesting in its own right. It's heavily skewed: most games end within a few hundred
-turns, but there's a long tail of games going past 1000. It fits a log-normal distribution well, which is what you'd
-expect if survival builds up from lots of small, independent risks. Every new hand is another chance to be dealt
-something that doesn't fit. Keep that in mind, luck comes back later.
+turns, but there's a long tail running all the way out to the cap. The best fit is a Weibull distribution with a
+shape close to 1 (k = 1.15), which means an almost **constant risk of dying on every move**, however long the game
+has lasted. Every new hand is a fresh roll of the dice, another chance to be dealt something that doesn't fit. Keep
+that in mind, luck comes back later.
 
 ### Complexity of decision-making
 
@@ -193,12 +197,12 @@ bands cover the middle 50%.
 
 A few things stand out:
 
-- **There's a lot of choice, but it can be narrowed down.** A typical board allows ~44 legal moves (5.4 bits), but the
-  agent only treats ~16 of them as serious candidates (4.0 bits). That feels like a good place for a puzzle game to
+- **There's a lot of choice, but it can be narrowed down.** A typical board allows ~50 legal moves (5.7 bits), but the
+  agent only treats ~20 of them as serious candidates (4.35 bits). That feels like a good place for a puzzle game to
   sit. It's far from obvious, but it's not an overwhelming Go-style wall of options either. And
   it's not the case that every move is as good as any other.
 - **It's remarkably flat.** After the opening (the empty board allows loads of moves), both entropies settle within
-  ~30–40 turns and then stay flat for hundreds of moves. The board doesn't slowly fill up over time.
+  ~30–50 turns and then stay flat for hundreds, even thousands, of moves. The board doesn't slowly fill up over time.
 - **Then it collapses.** Over the last ~20–30 moves both drop sharply. The agent's entropy starts falling slightly
   before the legal-move count, which fits running out of *good* moves before you run out of *legal* ones.
 
@@ -210,7 +214,7 @@ hand of 3 shaded:
 The legal moves (blue) follow a very regular sawtooth: the most freedom on the first piece of each hand, the least on
 the last. The agent (orange) is more interesting. There are one-off spikes down to ~0 bits where one move is clearly
 best (probably a line clear on offer), and longer troughs lasting several hands when the board gets tight, e.g. game
-39 around turns 25–60.
+308 around turns 35–58 and game 844 around turns 38–60.
 
 {{< lightbox src="/images/tenten/action_entropy_hand_cycle.png" alt="Entropy by position in the 3-piece hand" >}}
 
@@ -218,11 +222,11 @@ Splitting this up by position in the hand makes the rhythm clear:
 
 | | 1st piece (3 in hand) | 2nd piece (2 in hand) | 3rd piece (1 in hand) |
 |---|---|---|---|
-| Legal moves | 6.19 bits | 5.73 bits | 4.75 bits |
-| Agent | 4.01 bits | 4.50 bits | 3.96 bits |
+| Legal moves | 6.44 bits | 5.93 bits | 4.91 bits |
+| Agent | 4.74 bits | 5.02 bits | 4.24 bits |
 
-The board's freedom pulses strongly with the hand, but the agent's decisions barely do. Having 3 pieces gives you
-more placements, but it doesn't make the decision harder. My guess (untested) is that with 3 pieces the playing order
+The board's freedom pulses strongly with the hand, but the agent's decisions only weakly do. Having 3 pieces gives
+you more placements, but it doesn't make the decision harder, and the 2nd piece is actually the hardest call. My guess (untested) is that with 3 pieces the playing order
 matters a lot, e.g. setting up a line clear, which makes one move stand out.
 
 ### Inevitability of outcome
@@ -230,7 +234,7 @@ matters a lot, e.g. setting up a line clear, which makes one move stand out.
 {{< lightbox src="/images/tenten/value_autocorr.png" alt="Autocorrelation of the network's value, and value in the last 100 moves" >}}
 
 The left panel is the autocorrelation of the network's value. It drops below 1/e (a common "it's mostly forgotten"
-threshold) after **8 moves**, and is essentially gone by **~19 moves**. In other words, knowing a position is good or
+threshold) after **9 moves**, and is essentially gone by **~22 moves**. In other words, knowing a position is good or
 bad right now tells you very little about how things will look 6 hands later.
 
 The right panel shows the median value in the run-up to game over. It's flat until ~20–30 moves before the end and
@@ -242,14 +246,14 @@ Now for my favourite chart:
 {{< lightbox src="/images/tenten/value_recovery.png" alt="Chance of recovering from a bad position, and outcomes of dips" >}}
 
 On the left is the chance that a position gets back to a typical value before game over, plotted against how bad
-it is right now. On the right, for all 4771 dips across the 1000 games, is the share that have recovered (blue) or hit
+it is right now. On the right, for all 9351 dips across the 1000 games, is the share that have recovered (blue) or hit
 game over (orange) as the moves go by.
 
-- **81% of dips recover**, with a median of 9 moves.
-- **19% end in game over**, with a median of 8 moves.
+- **90% of dips recover**, with a median of 11 moves.
+- **10% end in game over**, also with a median of 11 moves.
 - Almost every dip is settled one way or the other within ~30 moves.
 - **There's no point of no return.** The chance of recovery falls smoothly as the position gets worse, and even the
-  worst 1% of positions recover 44% of the time.
+  worst 1% of positions recover 58% of the time.
 
 So you can usually get out of a bad position quickly, unless you can't, and then it's over just as fast.
 
@@ -260,15 +264,16 @@ typical value (dashed) and the dip threshold (dotted):
 
 The endings come in roughly three flavours:
 
-- **A steady slide** over the last ~15 moves (games 70, 816, 845 and 623).
-- **Sudden death.** Game 170 recovers from a dip 20 moves from the end, climbs back above typical, then dies within
-  the last 2 moves.
-- **Hovering around the threshold** for the last 20–30 moves before finally going under (games 12 and 39).
+- **A steady slide** over the last ~20–30 moves (games 309, 632 and 816).
+- **Sudden death.** Game 19 climbs back from a long dip to above typical ~25 moves from the end, then crashes in the
+  last ~5 moves. Games 503 and 173 sit near typical until the last few moves.
+- **Hovering around or below the threshold** for the last 20–30 moves before finally going under (games 269
+  and 844).
 
 ### What do these metrics tell us about 1010!?
 
 On **complexity of decision-making**, 1010! sits in a sweet spot. There are always plenty of legal moves, but the agent can narrow them down
-to a manageable shortlist of ~16. That stays consistent for the whole game, until the final crunch.
+to a manageable shortlist of ~20. That stays consistent for the whole game, until the final crunch.
 
 On **inevitability of outcome**, 1010! is very much *not* inevitable, and I think that's a big part of why it works.
 Being halfway through a game tells you almost nothing about how it'll end. A bad position is usually recoverable,
@@ -313,12 +318,16 @@ post, if you want to dig deeper:
 
 ### A. Game details
 
-- **Pieces:** 16 shapes, drawn uniformly at random with no rotation:
-  - lines of 3, 4 and 5 cells, horizontal and vertical (6 shapes);
+- **Pieces:** the 19 shapes of the real 1010!, drawn uniformly at random with no rotation (the real game's piece
+  odds aren't public, so uniform is a stand-in):
+  - a single 1×1 dot;
+  - lines of 2, 3, 4 and 5 cells, horizontal and vertical (8 shapes);
   - 2×2 and 3×3 squares;
   - small (3-cell) and large (5-cell) L shapes, 4 rotations each.
 - **Clearing:** several rows and columns can clear at once.
 - **Reward:** +1 per move survived. Points for line clears exist in the code but are switched off.
+- **Turn limit:** every simulated game is stopped at 2000 turns. A stopped game is treated as *censored* (it
+  survived at least that long), not as a game over.
 - **Action space:** 3 pieces × 14 × 14 anchor positions = 588 possible actions, most of which are illegal at any
   given moment. The anchor is the top-left of the piece's 5×5 bounding box, from −4 to 9 on each axis.
 
@@ -347,23 +356,32 @@ $\sum_k 0.98^k$ over the remaining moves, scaled to [0, 1]. A discount of 0.98 g
 moves, so positions 100 or 500 moves from death have almost the same target. The network is never asked to tell
 them apart.
 
+**What it's shown.** The network is trained on *after-states*: the board just after a move (lines already cleared)
+plus the pieces still waiting. That's exactly what the agent asks it to rate when choosing a move. After the last
+piece of a hand, the after-state has an empty hand, because the next hand hasn't been dealt yet, so the network
+learns the value averaged over whatever hand comes next. The "value of a position" in the charts is the network's
+score for the best move available there.
+
 ### D. Training
 
 {{< lightbox src="/images/tenten/training_and_analysis.png" alt="How the AI was trained and analysed" >}}
 
 - **Data generation:** each generation plays 1000 games with a "teacher" agent, which makes a random move 50% of the
-  time for variety. Every position is recorded with its discounted return, computed backwards from game over (+1
-  per move, discount 0.98). The targets are scaled by the largest return seen.
+  time for variety. Every after-state is recorded with its discounted return, computed backwards from game over (+1
+  per move, discount 0.98). The targets are scaled by the largest return seen. In games stopped at the 2000-turn
+  limit, the last 200 positions are dropped, because their returns are cut short.
 - **Augmentation:** each position is also added in all 8 rotations and reflections. The board and the pieces are
   transformed together, so the pieces still fit.
 - **Optimisation:** mean squared error, Adam (learning rate 0.01, weight decay 1e-4), batch size 8000, 20 epochs per
   generation. The learning rate is halved when validation loss stalls (patience 3), with an 80/20 train/validation
   split. The best validation checkpoint within each generation is kept.
 - **Curriculum:** the heuristic is the teacher at first. Once the network out-survives the heuristic by 5% (over 50
-  games each), it switches to self-play. 10 generations in total.
-- **How it went:** after generation 0 (heuristic data only) the network survived 26 turns, against the heuristic's
-  120. After generation 1 it survived 228, beat the heuristic and switched to self-play for generations 2–9. Final
-  validation loss was 0.0239, and the whole run took ~37 minutes on an Apple Silicon GPU.
+  games each), it switches to self-play. 10 generations were planned.
+- **How it went:** before training the network survived 23 turns, against the heuristic's 245. After generation 1
+  (heuristic data only) it survived 746, beat the heuristic and switched to self-play. Self-play generations took
+  ~35 minutes each, because the games are now long, so I stopped the run after ~2 hours, partway through generation
+  6. The model used here is the best checkpoint from generation 6 (validation loss 0.0309), all on an Apple Silicon
+  GPU.
 
 ### E. Metric details
 
@@ -371,17 +389,20 @@ them apart.
   best and the median move is only ~0.01–0.07, so at $T = 1$ every move would look equally likely. $T$ is a free
   parameter. The patterns hold across temperatures, but the absolute numbers depend on it.
 - **Normalised entropy:** $H / \log_2 N$, from 0 to 1. This is the agent's decisiveness *relative to* how many options
-  it has (the bottom row of the entropy chart). It sits at ~0.8 for most of the game and dips to ~0.72 at the end.
+  it has (the bottom row of the entropy chart). It sits at ~0.83–0.85 for most of the game and dips to ~0.63 at the
+  end.
 - **Mid-game:** turn 30 onwards, excluding the last 30 moves. Used for the steady-state analyses, because entropy and
   value are still settling after the empty board early on, and collapse at the end.
 - **Autocorrelation at lag $n$:** the correlation between a quantity at turn $t$ and at turn $t + n$, using each game's
   differences from its own mid-game average, averaged across games (only games long enough for the lags shown).
 - **Hand cycle removed:** before correlating, subtract each game's average for each position in the hand (1st, 2nd,
   3rd piece). This leaves only structure slower than the 3-move rhythm.
-- **Dips:** the typical value is the median mid-game value, 0.348. A dip starts when the value first falls into the
-  bottom 10% of mid-game values (below 0.274), and a new dip can only start after the previous one has recovered.
-  926 of the 1000 games ended in a dip that never recovered. The other ~7% died without ever reaching the bottom 10%,
-  a sudden death from a bad deal.
+- **Dips:** the typical value is the median mid-game value, 0.413. A dip starts when the value first falls into the
+  bottom 10% of mid-game values (below 0.354), and a new dip can only start after the previous one has recovered.
+  944 of the 964 games that ended (the rest hit the turn limit) did so in a dip that never recovered. The other ~2%
+  died without ever reaching the bottom 10%, a sudden death from a bad deal.
+- **Capped games:** anything measured "before game over" only uses the 964 games that ended. Positions in capped
+  games that hadn't recovered by the limit have an unknown outcome and are left out of the recovery analysis.
 
 ### F. Extra charts
 
@@ -393,15 +414,16 @@ removed (right):
 The legal-move entropy has sharp peaks every 3 moves that barely fade, because the game deals a new hand every 3
 moves regardless. With the cycle removed, it decays smoothly to ~0 by ~20 moves and never goes negative, so there's
 no longer hidden cycle, just persistence. A tight board stays tight for a couple of hands, then drifts back. The
-agent's entropy decorrelates much faster: its decisiveness is mostly move-to-move.
+agent's entropy decorrelates faster over the first few moves, then follows the same slow tail: its decisiveness is
+partly move-to-move, with a slower component driven by how tight the board is.
 
 **Value in the opening.** The first 100 moves of the same 10 games:
 
 {{< lightbox src="/images/tenten/value_traces.png" alt="Network value over the first 100 moves of 10 games" >}}
 
-The value starts at ~0.48 on the empty board and settles within ~30 turns. Game 39 spends turns ~22–55 at or below the
-dip threshold, the same stretch as its entropy trough, then climbs back above typical. Game 816 dips deep (~0.18)
-around turns 70–95 and recovers.
+The value starts at ~0.53 on the empty board and settles within ~30 turns. Game 308 slides below the dip threshold
+from turn ~35 and bottoms out at ~0.16 around turn 51, the same stretch as its entropy trough, then climbs back above
+typical by turn ~60. Game 507 drops sharply at turn 36 and recovers within ~6 moves.
 
 ### G. Limitations and next steps
 
@@ -410,10 +432,10 @@ around turns 70–95 and recovers.
   play. So "how inevitable the outcome is" is measured *through* the network. A more direct test is to replay the
   same position many times with different deals and measure how widely the outcomes spread. That's a good experiment
   for the follow-up post.
-- **The 3rd-piece blind spot.** When one piece is left, the network scores each candidate position with all three
-  piece slots empty, which never occurs in training. The last piece of each hand is therefore judged partly outside
-  what the network has seen. This is a known issue with a straightforward fix: include those positions in the
-  training data and retrain.
+- **Training was cut short.** The model is the best checkpoint from generation 6 of a planned 10, so more self-play
+  might make it a little stronger.
+- **The turn limit.** 3.6% of games were stopped at 2000 turns. The mean and median count them as 2000, so they
+  slightly understate the agent.
 
 ---
 
