@@ -58,7 +58,8 @@ still have something to continue to play for even if things aren't looking great
 ## Methodology
 
 Here's the setup. I've kept this section fairly light, the full details are in the [Appendix](#appendix) for anyone
-who wants them.
+who wants them. All the code, including the game, the training and the analysis, is on GitHub at
+[mattdown/PyTenTen](https://github.com/mattdown/PyTenTen).
 
 ### The game
 
