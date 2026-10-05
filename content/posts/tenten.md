@@ -93,6 +93,27 @@ For training, a hand-written heuristic agent (which likes clearing lines and dis
 batch of games. The network learned from those, overtook the heuristic after a single round, and from then on learned
 from its own games (self-play). The whole thing took ~4 hours on a laptop.
 
+#### Designed to generalise
+
+The network's shape was a deliberate choice, with the wider design loop in mind. It isn't tied to 1010!'s exact set
+of pieces or its 10×10 board, which matters a lot when the end goal is to change the rules.
+
+- **Different piece shapes.** Each piece in hand is drawn into its own input channel as a picture of the piece (its
+  5×5 layout), not as an ID from a fixed list of shapes. The convolutional layers then learn local patterns, such as
+  edges, gaps and filled runs, that apply to any shape. A new piece is just a new picture, so it can go straight into
+  the same network without changing its structure.
+- **Different board sizes.** Every convolution keeps the grid size as it is, and the only step that collapses the grid
+  down to a single set of features is the global average pooling at the end. So the same weights accept an 8×8 or a
+  12×12 board just as happily as a 10×10 one. There's no layer that only works for 100 cells.
+- **Any set of moves.** The network rates positions rather than outputting one score per possible move, so the
+  action space isn't baked in either. A bigger board or a new piece simply means the agent tries more placements.
+
+Being *able* to take these inputs isn't the same as playing well with them. I haven't tested this yet, and a
+variant that's far from what the network was trained on will likely need some extra training. But starting from a
+network that already understands the basics should be much cheaper than training a new agent from scratch for every
+variant. That's what makes it practical to explore far more of the design space: new piece sets, different
+board sizes and different piece odds can all be tested with the same agent.
+
 ### Unity - Python pipeline
 
 {{< lightbox src="/images/tenten/how_the_game_runs.png" alt="How the game runs: Unity talking to a Python server in development, and fully in the browser for the WebGL build" >}}
