@@ -314,8 +314,9 @@ this in the appendix).
 When designing new casual puzzle games these can be used to guide your own game dynamics, both in terms of the 
 design principles, but also the exact numbers that 1010! hits.
 
-That's only half of the loop from the intro though. In a follow-up post I'll close it by changing the rules and
-balance of 1010! and seeing how these metrics move.
+That's only half of the loop from the intro, and it's as far as I'm going to take 1010! for now. Rather than
+rebalancing a game that already works, the real power of this approach is in designing new games from scratch, and
+that's what I'll look at next.
 
 ## Related work
 
@@ -462,7 +463,7 @@ around typical within ~5 moves.
   a 0.98 discount (a ~50-move horizon) and targets taken from games with 50% random moves, not from its own greedy
   play. So "how inevitable the outcome is" is measured *through* the network. A more direct test is to replay the
   same position many times with different deals and measure how widely the outcomes spread. That's a good experiment
-  for the follow-up post.
+  for future work.
 - **Training games are capped, the results aren't.** The training data stops games at 2000 turns, but ~10% of the
   games analysed here go past 2000 (the longest lasted 6035). Those late positions look like ordinary mid-game
   positions, so this probably doesn't matter much.
