@@ -11,7 +11,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{{ if .IsPage }} {{ .Title }} | {{ end }}{{ .Site.Title }}</title>
   <link rel = 'canonical' href = '{{ .Permalink }}'>
-  {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+  {{ $desc := .Description | default (cond .IsPage (.Summary | plainify | truncate 160) site.Params.description) }}
+  {{ with $desc }}<meta name="description" content="{{ . }}">{{ end }}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">

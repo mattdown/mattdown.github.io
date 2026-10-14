@@ -1,5 +1,7 @@
 ---
 title: "Interactive Monte Carlo Tree Search Demo"
+description: "An interactive Monte Carlo Tree Search (MCTS) demo: play Connect 4 against the algorithm and watch the search tree grow in real time."
+images: ["/images/mcts_thumbnail.png"]
 date: 2026-06-17
 mathjax: true
 tags: ["MCTS", "Monte Carlo Tree Search", "Machine Learning", "ML", "AI", "Connect 4"]

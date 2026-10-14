@@ -2,6 +2,7 @@ baseURL = "https://mattdown.github.io/"
 locale = "en-us"
 title = "Matt Down"
 theme = "cactus"
+enableRobotsTXT = true
 copyright = "Matt Down"
 
 [markup]
@@ -41,7 +42,7 @@ weight = 3
   colortheme = "white"
   rss = true
   logo = "images/mattdown.jpeg"
-  description = "Game developer & programmer."
+  description = "Matt Down – game developer, CTO of Salto Games and ML researcher working on AI playtesting, game-playing agents and AI-assisted game design."
   mainSection = "posts"
   mainSectionTitle = "Posts"
   showAllPostsOnHomePage = false

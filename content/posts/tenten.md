@@ -1,5 +1,7 @@
 ---
 title: "Using an AI Agent to explore game dynamics in 1010!"
+description: "Using a reinforcement learning agent for AI playtesting of 1010!: automated playtests that measure game dynamics and help tune rules and balance during prototyping."
+images: ["/images/tenten/tenten_thumbnail.png"]
 date: 2026-09-28
 mathjax: true
 tags: ["Machine Learning", "ML", "Reinforcement Learning", "RL", "AI", "Game Design", "Game Prototyping"]
