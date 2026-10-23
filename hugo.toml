@@ -1,4 +1,4 @@
-baseURL = "https://mattdown.github.io/"
+baseURL = "https://mattdown.ai/"
 locale = "en-us"
 title = "Matt Down"
 theme = "cactus"
