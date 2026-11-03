@@ -1,11 +1,12 @@
 ---
 title: "Can AI Design a Trading Card Game from Scratch? Part 1: Generating the Cards"
 description: "Generating an original trading card game's cards from a grammar, and training a graph neural network that can play cards it has never seen, so self-play can playtest and price them."
+images: ["/images/tcg/tcg_part1_thumbnail.jpg"]
 date: 2026-11-03
 mathjax: false
 tags: ["TCG", "Machine Learning", "ML", "AI", "Graph Neural Networks", "GNNs", "Procedural Generation"]
 draft: true
-thumbnail: ""
+thumbnail: "/images/tcg/tcg_part1_thumbnail.jpg"
 ---
 
 ## Intro
