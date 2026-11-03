@@ -1,6 +1,6 @@
 ---
-title: "Can AI Design a Trading Card Game from Scratch? Part 1: Generating the Cards"
-description: "Generating an original trading card game's cards from a grammar, and training a graph neural network that can play cards it has never seen, so self-play can playtest and price them."
+title: "Can AI Design a Trading Card Game from Scratch? Part 1: Generating Cards and a GNN Agent"
+description: "Generating original cards for a trading card game from a grammar, and training a graph neural network that can play cards it has never seen, so self-play can playtest and price them."
 images: ["/images/tcg/tcg_part1_thumbnail.jpg"]
 date: 2026-11-03
 mathjax: false
@@ -16,10 +16,20 @@ struggle with balance. You want cards with interesting synergies, but no card so
 run it. Every new card interacts with every old one, so checking a set by hand gets harder with each card you
 add.
 
-The idea I've had ever since: what if an agent could **playtest** the set for you? Better still, what if it
+It isn't just us. Hearthstone, one of the best-known digital trading card games, has released thousands of
+cards over more than a decade, made by experienced designers. Even so, cards are regularly weakened ("nerfed") after launch, once millions of players find a combination
+nobody spotted, and Magic: The Gathering keeps lists of cards banned from its formats for the same reason.
+
+The idea I've had since those Mediatonic days: what if an agent could **playtest** the set for you? Better still, what if it
 could take a set that's badly balanced and tune it, playing thousands of games and adjusting costs until the
 cards are fair? This series is my attempt to do that for a whole set of around 3,000 cards, for a card game
-written from scratch.
+written from scratch:
+
+- **Part 1** (this post) builds the pieces: a card generator, an agent that can play any card it generates, and
+  a simple first pass at balancing.
+- **Part 2** balances the set properly, against the best decks rather than the average one, and gives it the
+  structure a real set needs: rarities, a mana curve, and aspects with identities of their own.
+- **Part 3** adds a twist of our own to the rules, so the game becomes more than a Hearthstone variant.
 
 There are two problems to solve:
 
@@ -32,22 +42,31 @@ Put them together and you get a loop:
 
 {{< demo src="/demos/tcg/design_loop.html" title="The design loop" bar="0px" >}}
 
+Each time round, the loop checks the set against a handful of design metrics: is each card worth its cost, do
+the cards work together, are there any infinite combos, are any two cards too alike? In part 1 we'll only look
+at the first of these, balancing card costs. The rest come in part 2.
+
+Choosing those metrics, and deciding what a healthy set looks like, is where skilled designers come into
+their own. The agent can tell you how strong a card is, not whether it's fun, easy to read, or leaves the
+opponent something to play against. So this is a playtesting tool for designers, not a replacement for them:
+they decide what to measure, and the loop does the thousands of games.
+
 ### Why not just ask an LLM?
 
 The obvious shortcut is to ask a large language model for 3,000 cards. It would produce something that *looks*
-like a card set, but it's a poor fit for this project for two reasons. LLMs have read every Magic and
-Hearthstone card ever printed, so what comes out tends to be a remix of existing cards, sometimes copied nearly
-word for word. I want a set that is original by construction. And an LLM can't tell you whether a card is
-balanced: it can guess, but it can't play 10,000 games with it.
+like a card set, but on its own it's a poor fit for this project, for two reasons. LLMs have read every Magic
+and Hearthstone card ever printed, so without constraints and checks for novelty, what comes out tends to drift
+towards cards that already exist. I want cards that are original by construction. And an LLM can't tell you
+whether a card is balanced: it can guess, but it can't play 10,000 games with it.
 
 So here the cards come from a small hand-written grammar, and the judging is done by an agent that has actually
-played them. (An LLM might still be useful later for naming cards. That's the one job it's well suited to.)
+played them. (An LLM might still be useful later for naming cards, a job it's well suited to.)
 
 ## The game
 
-The rules follow Hearthstone's broad structure, on purpose. Lots of people know it, so the results can be
-compared with a real, well-understood game, and if you've played Hearthstone or Magic you already know most of
-this:
+For part 1, the rules follow Hearthstone's broad structure, on purpose. Lots of people know it, so the results
+can be compared with a real, well-understood game, and if you've played Hearthstone or Magic you already know
+most of this:
 
 - Each player has a **hero with 30 health**. Reduce the enemy hero to 0 and you win.
 - You get one more **mana crystal** each turn, up to 10, and spend mana to play cards.
@@ -61,6 +80,10 @@ The theme is mushrooms with jobs: a Porcini Baker, an Enoki Lamplighter, a Ghost
 and the six aspects (Ember, Bog, Moss, Meadow, Glow and Frost) are habitats. For now they're just colours.
 
 {{< lightbox src="/images/tcg/help_screen.webp" alt="The game's help screen: how to read a card, and the five keywords" >}}
+
+Under the hood, a rules engine in Python owns every rule and all of the game's state; the Unity client in the
+screenshots only draws what the server sends it. Cards are pure data, so a newly generated card never needs new
+code.
 
 ## Generating cards
 
@@ -100,8 +123,17 @@ that choice. The GNN passes messages along the edges, so each node builds up a p
 The key point is that a card is described only by *what it is* (its stats, keywords and ability graph), never
 by an ID. A new card is just a new graph built from familiar parts, so the network can read it straight away.
 
-The agent learns by playing against itself (PPO self-play, with past versions of itself mixed in). On cards
-it has never trained on, it now beats a hand-written heuristic player about 75% of the time.
+The agent learns by playing against itself, with PPO. The only reward is +1 for a win and −1 for a loss, and
+some of its games are against frozen earlier versions of itself and a hand-written player, so it doesn't just
+learn to beat its current self. The hand-written player is simple: it plays the most expensive card it can
+afford, attacks a unit when it can kill it and survive, and otherwise goes for the hero. On a set of 200 cards
+the agent never trained on, it beats that player in 69% of games (275 of 400). Those cards come from
+the same grammar as its training cards, though, so this is new combinations of familiar building blocks rather
+than brand-new mechanics: a new kind of effect would need the grammar extending and the network training on it.
+
+None of this needs a big machine. Self-play runs at roughly 5–10 games a second on my Mac, across 10 processes;
+a training iteration is 64 games and takes about 20 seconds, and the agent in this post had a few hours of
+training in all.
 
 The three demos below show what happens inside the network, one stage at a time.
 
@@ -128,6 +160,18 @@ involves, the same network handles any number of actions, and any card.
 
 {{< demo src="/demos/tcg/gnn_visualiser_3.html" title="GNN visualiser, part 3: the policy and value heads" >}}
 
+### How good does the agent need to be?
+
+It doesn't need to be superhuman. To measure a design, it needs to play roughly the way people play. If it
+finds a line no human would, or misses one every human would, its numbers say more about the agent than about
+the cards. Beating a simple scripted player two games in three is a long way from expert play, but it's
+enough to tell a strong card from a weak one.
+
+It also has no belief system. It sees its own hand and the board, but it doesn't try to work out what the
+opponent is holding, as a good player does. For measuring whether a card is fairly priced, that's probably
+fine: a card that's too cheap is too cheap whoever is holding it. Part 2 will push the limits of this setup,
+because finding the strongest decks takes a stronger player.
+
 ## Balancing, version one
 
 Each generated card starts with a cost from a rough value table: so many points for power, health, each
@@ -139,12 +183,11 @@ keyword and each effect. Then the agent tests the table by playing it against va
 
 The current balancing loop is deliberately small in scope: it only prices each kind of effect, and making
 the set truly balanced will be the main focus of part 2. Even so, it caught a lot. The table charged far too
-much for abilities: a deck lost three games in
-four to its own copy with the abilities traded for stats. Only about half of the abilities ever did anything
+much for abilities: a deck lost three games in four to its own copy with the abilities traded for stats. Only about half of the abilities ever did anything
 when played, because their targets often weren't there. So the agent measured what each kind of effect is
 actually worth, the costs were updated, the set regenerated and the agent fine-tuned on the new cards. After a
 few rounds, a deck with abilities wins about 55–59% against the same deck with stats instead, and actions are
-roughly worth their cost.
+roughly worth their cost. Each of these comparisons is 800 games.
 
 ## The first 200 cards
 
@@ -170,14 +213,12 @@ A few patterns don't work as designs, though:
 Both are easy to fix in the grammar: health buffs can last, and a summoning action can make two or more units or
 do something else as well. Neither needs a rule about a particular card.
 
-Some cards are also simply too cheap:
+Some cards are also simply too cheap. A few examples:
 
 - **Mire Gossip** (1 mana): draw 4 cards, or deal 2 damage.
 - **Firefly Letters** (1 mana): draw 3 cards, or return every enemy unit to its owner's hand.
 - **Ghost Miner – Clocking Off** (1 mana): a 1/1 that draws 2 cards at the end of every turn.
 - **Truffle Baker – Chicken Soup** (1 mana): heals your hero for 4 at the start of every turn.
-
-<!-- TODO: check these against the card lab before publishing; swap in any you'd rather show -->
 
 Card draw and healing come out much too cheap, and the reason says something about the method. Each effect's
 price is its *average* worth over random decks. In a random deck, many of those extra cards are mediocre, so
@@ -185,5 +226,8 @@ drawing them isn't worth much. But nobody plays random decks. Players build the 
 the best deck an extra card is worth a lot. A card's fair cost depends on the strongest deck it can appear in,
 not the average one. One combo that breaks 1% of decks is all anyone will play.
 
-That's part 2: searching for the best decks and balancing the set against them. The grammar will grow too, with
-the fixes above and new building blocks for the cards to use.
+That's part 2: searching for the best decks and balancing the set against them, and it's the exciting bit. A card's
+worth depends on the cards around it: jobs that reward each other, triggers that feed each other, combos nobody
+designed. The number of possible 30-card decks is astronomical, so finding the strongest ones, and the cards
+that make them too strong, is a hard search problem, and it may well take some interesting ML to solve. The grammar
+will grow too, with the fixes above and new building blocks for the cards to use.
