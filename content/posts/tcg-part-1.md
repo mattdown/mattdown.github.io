@@ -205,13 +205,14 @@ are the kinds of cards a designer might write.
 A few patterns don't work as designs, though:
 
 - **Turkey-tail Postman – Morning Rounds:** "At the start of your turn, your other units get +2 health this
-  turn." Health that disappears at the end of the turn is hard to follow, and it rarely matters. A short-lived
-  power boost makes sense; short-lived health mostly doesn't.
+  turn." When your turn ends, the extra health goes but the damage stays. A unit that survived its attack only
+  thanks to the buff then dies as you end your turn, and since units attack once a turn, the extra time buys it
+  nothing. Health that lasts through the opponent's turn would make it a real defensive buff.
 - **Actions that summon a single unit,** like **Hayfield Gathering** (2 mana: summon a 1/3 Cap Kid). That's a
   unit card with an extra step, so it might as well be a unit card.
 
-Both are easy to fix in the grammar: health buffs can last, and a summoning action can make two or more units or
-do something else as well. Neither needs a rule about a particular card.
+Both are easy to fix in the grammar: health buffs can last through the opponent's turn, and a summoning action
+can make two or more units or do something else as well. Neither needs a rule about a particular card.
 
 Some cards are also simply too cheap. A few examples:
 
@@ -231,3 +232,5 @@ worth depends on the cards around it: jobs that reward each other, triggers that
 designed. The number of possible 30-card decks is astronomical, so finding the strongest ones, and the cards
 that make them too strong, is a hard search problem, and it may well take some interesting ML to solve. The grammar
 will grow too, with the fixes above and new building blocks for the cards to use.
+
+*AI was used to help build this project, write this post and generate the game's assets.*
