@@ -1,0 +1,22 @@
+{{/* An interactive page from static/demos, in a frame. The visualisers scale a 16:9 stage to fit and put a
+     52px control bar under it, so by default the frame is 16:9 plus the bar; pass height for a page that
+     scrolls (the card lab). */}}
+{{ $src    := .Get "src" }}
+{{ $title  := .Get "title" | default "Demo" }}
+{{ $bar    := .Get "bar" | default "52px" }}
+{{ $height := .Get "height" }}
+<figure class="demo-embed" style="margin: 2rem 0;">
+  {{ if $height }}
+  <iframe src="{{ $src }}" title="{{ $title }}" loading="lazy"
+          style="display: block; width: 100%; height: {{ $height }}; border: 0; border-radius: 4px; background: #050C0A;"></iframe>
+  {{ else }}
+  <div style="position: relative; width: 100%; height: 0; padding-bottom: calc(56.25% + {{ $bar }});">
+    <iframe src="{{ $src }}" title="{{ $title }}" loading="lazy"
+            style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 4px; background: #050C0A;"></iframe>
+  </div>
+  {{ end }}
+  <figcaption style="display: flex; justify-content: space-between; gap: 1rem; font-size: 0.8rem; color: #888; padding-top: 0.4rem;">
+    <span>{{ $title }}</span>
+    <a href="{{ $src }}" target="_blank" rel="noopener" style="white-space: nowrap;">Open full screen ↗</a>
+  </figcaption>
+</figure>
