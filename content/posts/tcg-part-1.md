@@ -1,5 +1,5 @@
 ---
-title: "Can AI Design a Trading Card Game from Scratch? Part 1: Generating Cards and a GNN Agent"
+title: "Can AI Playtesting Help Design a Trading Card Game? Part 1: Generating Cards and a GNN Agent"
 description: "Generating original cards for a trading card game from a grammar, and training a graph neural network that can play cards it has never seen, so self-play can playtest and price them."
 images: ["/images/tcg/tcg_part1_thumbnail.jpg"]
 date: 2026-11-03
@@ -29,7 +29,11 @@ written from scratch:
   a simple first pass at balancing.
 - **Part 2** balances the set properly, against the best decks rather than the average one, and gives it the
   structure a real set needs: rarities, a mana curve, and aspects with identities of their own.
-- **Part 3** adds a twist of our own to the rules, so the game becomes more than a Hearthstone variant.
+- **Part 3** puts the tools to work on something genuinely new: not a twist on Hearthstone, but a game with
+  ideas of its own, which still keeps the DNA every trading card game shares.
+
+Parts 1 and 2 are the proof of concept. They use rules close to a game many people know, so it's easy to see
+whether the tools work. Part 3 is what they're for: designing a card game that doesn't exist yet.
 
 There are two problems to solve:
 
@@ -146,8 +150,9 @@ health and keywords, an ability step's type and amount. Here we follow one card 
 
 ### 2. One layer of message passing
 
-Each layer, every node collects messages from its neighbours. Attention decides how much each neighbour
-matters, so a unit can listen more closely to the enemy Guard in front of it than to a card in hand. After a
+Each layer, every node collects messages from its neighbours. The layers are
+[GATv2](https://arxiv.org/abs/2105.14491) graph attention layers, with their own weights for each kind of edge:
+attention decides how much each neighbour matters, so a unit can listen more closely to the enemy Guard in front of it than to a card in hand. After a
 few layers, a card's vector carries what's going on around it.
 
 {{< demo src="/demos/tcg/gnn_visualiser_2.html" title="GNN visualiser, part 2: one GNN layer, step by step" >}}
