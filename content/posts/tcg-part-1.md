@@ -66,6 +66,28 @@ whether a card is balanced: it can guess, but it can't play 10,000 games with it
 So here the cards come from a small hand-written grammar, and the judging is done by an agent that has actually
 played them. (An LLM might still be useful later for naming cards, a job it's well suited to.)
 
+### Others have tried this
+
+Using AI to playtest card games isn't new. Google's Stadia team built **Chimera**, a card game prototype whose
+trained agents played millions of games so its designers could tune the balance
+([Google Research, 2021](https://research.google/blog/leveraging-machine-learning-for-game-development/)).
+Researchers have used evolutionary search on Hearthstone, both to map the space of strong decks
+([Fontaine et al., 2019](https://arxiv.org/abs/1904.10656)) and to find small card changes that bring the top
+decks back towards even win rates ([de Mesentier Silva et al., 2019](https://arxiv.org/abs/1907.01623)). And
+neural networks trained on Magic's cards have been writing new ones for years.
+
+What's different here is the combination, and the scale:
+
+- **The cards are generated, not hand-written.** The abilities come from a grammar, so they're original by
+  construction, and every one is guaranteed to run.
+- **The agent reads what a card does.** The projects above work with a known set of cards: Hearthstone's own,
+  or a prototype's. Here the network reads each card's ability tree, so it can play cards it has never seen,
+  and the set can change without training a new agent from scratch.
+- **The whole set is in the loop.** Generating, playtesting, measuring and tuning run together, on a set of
+  around 3,000 cards, rather than as a few changes to a finished game.
+- **The goal is a new game.** Parts 1 and 2 test the tools on familiar rules; part 3 uses them to make
+  something original.
+
 ## The game
 
 For part 1, the rules follow Hearthstone's broad structure, on purpose. Lots of people know it, so the results
