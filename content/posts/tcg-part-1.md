@@ -137,7 +137,9 @@ keyword and each effect. Then the agent tests the table by playing it against va
 - against the same deck with each ability's points put back into plain stats (are abilities priced fairly?),
 - against the same deck with its actions swapped for plain units of the same cost (are actions fair?).
 
-The first results were humbling. The table charged far too much for abilities: a deck lost three games in
+The current balancing loop is deliberately small in scope: it only prices each kind of effect, and making
+the set truly balanced will be the main focus of part 2. Even so, it caught a lot. The table charged far too
+much for abilities: a deck lost three games in
 four to its own copy with the abilities traded for stats. Only about half of the abilities ever did anything
 when played, because their targets often weren't there. So the agent measured what each kind of effect is
 actually worth, the costs were updated, the set regenerated and the agent fine-tuned on the new cards. After a
@@ -153,11 +155,22 @@ Here they are: the first 200 cards, generated and costed by the loop above. Filt
 
 ## What's next
 
-I'm pleased with how many of these play like real cards. A Porcini Baker that deals 4 damage when it's
+On the whole, the grammar has generated some great abilities. A Porcini Baker that deals 4 damage when it's
 defeated, a Buttercup Growth for your Miners, an Oyster Postman that makes your other Postmen cheaper: these
 are the kinds of cards a designer might write.
 
-Some are obviously broken, though:
+A few patterns don't work as designs, though:
+
+- **Turkey-tail Postman – Morning Rounds:** "At the start of your turn, your other units get +2 health this
+  turn." Health that disappears at the end of the turn is hard to follow, and it rarely matters. A short-lived
+  power boost makes sense; short-lived health mostly doesn't.
+- **Actions that summon a single unit,** like **Hayfield Gathering** (2 mana: summon a 1/3 Cap Kid). That's a
+  unit card with an extra step, so it might as well be a unit card.
+
+Both are easy to fix in the grammar: health buffs can last, and a summoning action can make two or more units or
+do something else as well. Neither needs a rule about a particular card.
+
+Some cards are also simply too cheap:
 
 - **Mire Gossip** (1 mana): draw 4 cards, or deal 2 damage.
 - **Firefly Letters** (1 mana): draw 3 cards, or return every enemy unit to its owner's hand.
@@ -166,10 +179,11 @@ Some are obviously broken, though:
 
 <!-- TODO: check these against the card lab before publishing; swap in any you'd rather show -->
 
-Card draw and healing are much too cheap. The reason says something about the method. Each effect's price
-is its *average* worth over random decks. In a random deck, many of those extra cards are mediocre, so drawing
-them isn't worth much. But nobody plays random decks. Players build the **best** deck they can, and in the
-best deck an extra card is worth a lot. A card's fair cost depends on the strongest deck it can appear in,
-not the average one. One combo that breaks 1% of decks is all players will play.
+Card draw and healing come out much too cheap, and the reason says something about the method. Each effect's
+price is its *average* worth over random decks. In a random deck, many of those extra cards are mediocre, so
+drawing them isn't worth much. But nobody plays random decks. Players build the **best** deck they can, and in
+the best deck an extra card is worth a lot. A card's fair cost depends on the strongest deck it can appear in,
+not the average one. One combo that breaks 1% of decks is all anyone will play.
 
-That's part 2: searching for the best decks, and balancing the set against them.
+That's part 2: searching for the best decks and balancing the set against them. The grammar will grow too, with
+the fixes above and new building blocks for the cards to use.
