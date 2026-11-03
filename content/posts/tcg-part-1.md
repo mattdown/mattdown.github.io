@@ -5,7 +5,7 @@ images: ["/images/tcg/tcg_part1_thumbnail.jpg"]
 date: 2026-11-03
 mathjax: false
 tags: ["TCG", "Machine Learning", "ML", "AI", "Graph Neural Networks", "GNNs", "Procedural Generation"]
-draft: true
+draft: false
 thumbnail: "/images/tcg/tcg_part1_thumbnail.jpg"
 ---
 
