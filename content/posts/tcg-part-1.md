@@ -1,5 +1,5 @@
 ---
-title: "Can AI Playtesting Help Design a Trading Card Game? Part 1: Generating Cards and a GNN Agent"
+title: "Using AI Playtesting to Design an Original Trading Card Game, Part 1: Generating Cards and a GNN Agent"
 description: "Generating original cards for a trading card game from a grammar, and training a graph neural network that can play cards it has never seen, so self-play can playtest and price them."
 images: ["/images/tcg/tcg_part1_thumbnail.jpg"]
 date: 2026-11-03
@@ -29,11 +29,11 @@ written from scratch:
   a simple first pass at balancing.
 - **Part 2** balances the set properly, against the best decks rather than the average one, and gives it the
   structure a real set needs: rarities, a mana curve, and aspects with identities of their own.
-- **Part 3** puts the tools to work on something genuinely new: not a twist on Hearthstone, but a game with
-  ideas of its own, which still keeps the DNA every trading card game shares.
+- **Part 3** puts the tools to work on an original TCG that can stand on its own. Exactly what form that takes
+  is still to be decided.
 
 Parts 1 and 2 are the proof of concept. They use rules close to a game many people know, so it's easy to see
-whether the tools work. Part 3 is what they're for: designing a card game that doesn't exist yet.
+whether the tools work. Part 3 is what they're for.
 
 There are two problems to solve:
 
