@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design Loop</title>
+<title>The design loop</title>
+<meta name="description" content="The design loop for an AI-playtested trading card game, as an animated panel: generate cards from an ability grammar, let a self-play agent (a graph neural network) play thousands of games with them, measure the set against design metrics chosen by designers, tune the cards, and go round again.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Outfit:wght@500;700;800&display=swap">
 <style>
@@ -446,5 +447,6 @@ if (still) {
   (function frame(now) { if (!still) draw(Math.max(0, now - start) / 1000); requestAnimationFrame(frame); })(start);
 }
 </script>
+<noscript><p style="max-width: 40em; margin: 2em auto; font: 16px/1.5 sans-serif; color: #E6FBF4;">The design loop for an AI-playtested trading card game, as an animated panel: generate cards from an ability grammar, let a self-play agent (a graph neural network) play thousands of games with them, measure the set against design metrics chosen by designers, tune the cards, and go round again.</p></noscript>
 </body>
 </html>

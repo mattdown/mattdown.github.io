@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GNN Visualiser</title>
+<title>GNN visualiser 2: one GATv2 layer</title>
+<meta name="description" content="Part 2 of how a trading card game agent's graph neural network reads the board: one GATv2 message-passing layer, step by step. Two learned matrices, LeakyReLU and a dot product score each neighbour, softmax turns the scores into attention, and the weighted messages from every edge type are added, followed by ReLU, a residual connection and LayerNorm.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Outfit:wght@500;700;800&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -1298,5 +1299,6 @@ async function init() {
 }
 init();
 </script>
+<noscript><p style="max-width: 40em; margin: 2em auto; font: 16px/1.5 sans-serif; color: #E6FBF4;">Part 2 of how a trading card game agent's graph neural network reads the board: one GATv2 message-passing layer, step by step. Two learned matrices, LeakyReLU and a dot product score each neighbour, softmax turns the scores into attention, and the weighted messages from every edge type are added, followed by ReLU, a residual connection and LayerNorm.</p></noscript>
 </body>
 </html>

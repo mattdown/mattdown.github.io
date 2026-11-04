@@ -7,6 +7,8 @@ mathjax: false
 tags: ["TCG", "Machine Learning", "ML", "AI", "Graph Neural Networks", "GNNs", "Procedural Generation"]
 draft: false
 thumbnail: "/images/tcg/tcg_part1_thumbnail.jpg"
+series: "Using AI Playtesting to Design an Original Trading Card Game"
+repository: "https://github.com/mattdown/TCG-Project"
 ---
 
 Years ago at Mediatonic I watched designers struggle to balance a Hearthstone-style card game. Every new card

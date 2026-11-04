@@ -1,0 +1,21 @@
+# Matt Down
+
+> Matt Down is a game developer, CTO of Salto Games and an ML researcher working on AI playtesting, game-playing agents and AI-assisted game design.
+
+## Using AI Playtesting to Design an Original Trading Card Game
+
+A blog series about generating and balancing a set of about 3,000 cards for an original trading card game. Cards are generated from a hand-written ability grammar, and a graph neural network agent trained by self-play plays them, so designers can see which cards are too strong or too weak.
+
+- [Part 1: Generating Cards and a GNN Agent](https://mattdown.ai/posts/tcg-part-1/): the card generator, an agent (GATv2 layers, PPO self-play) that plays cards it has never seen and beats a scripted player in 69% of games on 200 unseen cards, and a basic balance pass. Mostly interactive demos.
+- [Source code and details](https://github.com/mattdown/TCG-Project): the README covers card generation, the agent's architecture and training, benchmarks, the balance pass, known problems, related work, the game's rules and how to run everything.
+- Part 2 (planned): balancing against the strongest decks, a more expressive grammar, controlled synergy and deck generation.
+- Part 3 (planned): using the tools to design an original game.
+
+## Interactive demos from part 1
+
+- [The design loop](https://mattdown.ai/demos/tcg/design_loop.html): generate, playtest, measure, tune.
+- [Card generation visualiser](https://mattdown.ai/demos/tcg/card_generation_visualiser.html): one card's path through the grammar.
+- [GNN visualiser 1](https://mattdown.ai/demos/tcg/gnn_visualiser_1.html): the board as a state graph.
+- [GNN visualiser 2](https://mattdown.ai/demos/tcg/gnn_visualiser_2.html): one GATv2 layer, step by step.
+- [GNN visualiser 3](https://mattdown.ai/demos/tcg/gnn_visualiser_3.html): the policy and value heads.
+- [Card lab](https://mattdown.ai/demos/tcg/card_lab.html): the first 200 cards and the draws that were thrown away.

@@ -24,6 +24,16 @@
   {{ with site.Params.sameAs }}{{ $person = merge $person (dict "sameAs" .) }}{{ end }}
   <script type="application/ld+json">{{ $person | jsonify | safeJS }}</script>
   {{ end }}
+  {{ if and .IsPage (eq .Section "posts") }}
+  {{/* A post as schema.org data, so search engines and LLMs get its author, dates, series and code. */}}
+  {{ $post := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "url" .Permalink "datePublished" (.Date.Format "2006-01-02") "dateModified" (.Lastmod.Format "2006-01-02") "author" (dict "@type" "Person" "name" site.Title "url" site.Home.Permalink) }}
+  {{ with $desc }}{{ $post = merge $post (dict "description" .) }}{{ end }}
+  {{ with .Params.thumbnail }}{{ $post = merge $post (dict "image" (. | absURL)) }}{{ end }}
+  {{ with .Params.tags }}{{ $post = merge $post (dict "keywords" (delimit . ", ")) }}{{ end }}
+  {{ with .Params.series }}{{ $post = merge $post (dict "isPartOf" (dict "@type" "CreativeWorkSeries" "name" .)) }}{{ end }}
+  {{ with .Params.repository }}{{ $post = merge $post (dict "isBasedOn" (dict "@type" "SoftwareSourceCode" "codeRepository" . "url" .)) }}{{ end }}
+  <script type="application/ld+json">{{ $post | jsonify | safeJS }}</script>
+  {{ end }}
   {{ .Scratch.Set "colortheme" "white"}}
   {{ if .Site.Params.Colortheme }}
     {{ .Scratch.Set "colortheme" .Site.Params.Colortheme }}
