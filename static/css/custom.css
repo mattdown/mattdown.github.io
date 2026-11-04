@@ -310,3 +310,37 @@ body.colorscheme-dark .game-desc {
 body.colorscheme-dark .status-released  { background: #1a3a22; color: #6fcf97; }
 body.colorscheme-dark .status-in-progress { background: #3a3010; color: #f2c94c; }
 body.colorscheme-dark .status-jam       { background: #1a1f4a; color: #a5b4fc; }
+
+/* ── Post headings ───────────────────────────────────────── */
+/* The theme's h2 is body size and its h3 smaller, so sections don't stand out in a long post. */
+
+article .content h2 {
+  margin-top: 3.25rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(43, 188, 138, 0.45);
+  font-size: 1.45rem;
+  line-height: 1.3;
+}
+
+article .content h2:before {
+  top: 0;
+  left: -1.5rem;
+  font-size: 1.45rem;
+}
+
+article .content h3 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.6rem;
+  color: #2bbc8a;
+  text-decoration: none;
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 700px) {
+  article .content h2:before {
+    position: static;
+    margin-right: 0.5rem;
+  }
+}
