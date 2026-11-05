@@ -81,8 +81,8 @@ mana. That's because each effect is priced by its worth in an average deck, and 
 
 Part 2 will tackle three things:
 
-- **A more expressive grammar.** More building blocks for abilities: buffs that last, effects that count
-  ("for each Miner you control…"), new triggers and new kinds of card.
+- **A more expressive grammar.** More building blocks for abilities: new triggers to react to, more things
+  to count, abilities that remember what happened this turn, and effects that reach the discard pile and deck.
 - **Controlling synergy.** The generator already makes cards that work together, through shared jobs and
   triggers that feed each other. Part 2 will control it in a more principled way, so each deck has the right
   amount of synergy: enough to reward building around a theme, not so much that one combo wins on its own.
