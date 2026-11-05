@@ -11,8 +11,8 @@ series: "Using AI Playtesting to Design an Original Trading Card Game"
 repository: "https://github.com/mattdown/TCG-Project"
 ---
 
-Years ago at Mediatonic I watched designers struggle to balance a Hearthstone-style card game. Every new card
-interacts with every old one, so checking a set by hand gets harder with each card you add. Even Hearthstone
+Years ago at Mediatonic, balancing a Hearthstone-style card game was one of our biggest design challenges. Every
+new card interacts with every old one, so checking a set by hand gets harder with each card you add. Even Hearthstone
 and Magic: The Gathering, with experienced teams, weaken or ban cards after launch.
 
 What if an agent could **playtest** the set for you, playing thousands of games and helping designers tune it?
@@ -27,8 +27,9 @@ are in the [GitHub repository](https://github.com/mattdown/TCG-Project).
 
 ## The loop
 
-Generate cards, let the agent play them, measure, tune, repeat. Designers choose what to measure; the loop
-plays the games.
+Generate cards, let the agent play them, measure, tune, repeat. As with all AI playtesting, the design metrics
+are where human creativity comes in: designers choose what to measure and what to change. The AI doesn't take
+over the key design decisions. It shows their impact quickly, without lengthy rounds of human playtesting.
 
 {{< demo src="/demos/tcg/design_loop.html" title="The design loop" bar="0px" >}}
 
